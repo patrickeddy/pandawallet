@@ -2,9 +2,9 @@ import React from 'react';
 import {
   Text,
   View,
-  Button,
   StyleSheet
 } from 'react-native';
+import Button from 'react-native-button'
 import PriceCalendar from '../components/PriceCalendar';
 
 export default class HomeScreen extends React.Component {
@@ -29,9 +29,17 @@ export default class HomeScreen extends React.Component {
     // Setup the button
     const rbs = (
       <View style={styles.transactionButtons}>
-        <View style={styles.addButton}>
-          <Button onPress={() => navigation.navigate('Transaction')} title="+"/>
-        </View>
+        <Button
+          onPress={() => navigation.navigate('Transaction', {mode: 1})}
+          title="+"
+          containerStyle={styles.tButtonContainer}
+          style={styles.tButton}
+        >+</Button>
+        <Button
+          onPress={() => navigation.navigate('Transaction', {mode: 0})}
+          containerStyle={styles.tButtonContainer}
+          style={styles.tButton}
+        >-</Button>
       </View>
     );
     return {
@@ -41,9 +49,9 @@ export default class HomeScreen extends React.Component {
   };
   render() {
     return (
-      <View>
-        <Text>{this.state.balance}</Text>
-        <PriceCalendar navigation={this.props.navigation}/>
+      <View style={styles.container}>
+        <Text style={styles.balance}>{this.state.balance}</Text>
+        <PriceCalendar navigation={this.props.navigation} style={styles.calendar}/>
       </View>
     );
   }
@@ -52,8 +60,9 @@ export default class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection: "column",
     justifyContent: 'flex-start',
-    alignItems: 'center'
+    alignItems: 'stretch'
   },
   transactionButtons: {
     flex: 1,
@@ -62,15 +71,26 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   balance: {
+    flex: 2,
+    alignItems: "flex-end",
     fontWeight: "bold",
-    fontSize: 20,
+    fontSize: 50,
+    backgroundColor: 'black',
+    color: 'white'
   },
-  addButton: {
-    marginLeft: 10,
-    borderRadius: 25
+  calendar: {
+    flex: 8,
+    flexDirection: "column",
+    justifyContent: "space-around",
+    alignItems: "stretch"
   },
-  subtractButton: {
+  tButtonContainer: {
+    padding: 15,
     margin: 10,
-    padding: 50,
+    backgroundColor: 'blue'
+  },
+  tButton: {
+    color: 'white',
+    borderRadius: 100
   }
 });

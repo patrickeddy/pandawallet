@@ -13,18 +13,9 @@ export default class PriceCalendar extends React.Component {
     const { navigate } = this.props.navigation;
     return(
       <Calendar
-        style={styles.container}
+        style={this.props.style}
         onDayPress={()=> navigate('Transaction')}
         maxDate={Date()} />
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: "column",
-    justifyContent: "space-around",
-    alignItems: "stretch"
-  }
-});
