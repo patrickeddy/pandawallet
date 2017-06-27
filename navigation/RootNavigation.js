@@ -15,6 +15,8 @@ const AppNavigation = StackNavigator({
 
 export default class RootNavigation extends React.Component{
   render() {
-    return <AppNavigation></AppNavigation>
+    return <AppNavigation style={{
+      marginTop: Expo.Constants.statusBarHeight
+    }}/>
   }
 }
