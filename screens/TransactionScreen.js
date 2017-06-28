@@ -3,40 +3,76 @@ import {
   View,
   Text,
   StyleSheet,
-  TextInput
+  TextInput,
+  DeviceEventEmitter
 } from 'react-native';
 import Button from 'react-native-button';
 
-const Mode = {
-  SUBTRACT: 0,
-  ADD: 1
-};
+const Mode = ['-', '+'];
 
 export default class TransactionScreen extends React.Component {
 
   state = {
+    mode: this.props.navigation.state.params.mode,
     amount: 0,
-    note: ""
+    note: "",
   };
 
-  componentWillReceiveProps() {
+  _doneButtonPress(){
+    // Add or subtract the amount based on the current transaction node from the total balance.
+    console.log(`State amount ${this.state.amount} and note is: ${this.state.note}`);
+
+    const { mode, amount, note } = this.state;
+    const { goBack } = this.props.navigation;
+    const { updateBalance } = this.props.navigation.state.params;
+
+    // First get the balance from local store.
+    storage.load({
+      key: 'balance'
+    }).then(ret=>{
+      let balance = ret;
+      // Do the calculation for account balance.
+      balance = this.state.mode == 0 ? balance - this.state.amount : balance + this.state.amount;
+      //======
+      //TODO: Save the date object to a master date object.
+      //======
+      // Save the objects
+      storage.save({
+        key: 'balance',
+        data: balance
+      }).then(ret=>{
+        // Call the updateBalance callback method and then navigate back
+        DeviceEventEmitter.emit('updateBalance', {});
+        console.log("Balance update emitted");
+        goBack();
+      }).catch(err=>{
+        console.warn(err.message);
+      });
+    }).catch(err=>{
+      console.warn(err.message);
+    });
+  }
+
+  componentWillMount() {
+    const doneButton = (
+      <Button
+        style={styles.doneButton}
+        containerStyle={styles.doneButtonContainer}
+        onPress={()=> this._doneButtonPress()}
+      >Done</Button>
+    );
+
     this.props.navigation.setParams({
-      title: this.props.mode === Mode.SUBTRACT ? "-" : "+"
+      doneButton: doneButton
     });
   }
 
   static navigationOptions = ({navigation}) => {
     const { navigate } = navigation;
-    const doneButton = (
-      <Button
-        style={styles.doneButton}
-        onPress={()=> navigation.goBack()}
-      >Done</Button>
-    );
 
     return {
-      title: navigation.state.params.title,
-      headerRight: doneButton
+      title: Mode[navigation.state.params.mode],
+      headerRight: navigation.state.params.doneButton
     };
   };
 
@@ -47,10 +83,11 @@ export default class TransactionScreen extends React.Component {
         <TextInput
           style={styles.amount}
           placeholder="0"
+          autoFocus={true}
           keyboardType='numeric'
           editable={true}
           returnKeyType='done'
-          onChangeText={(text)=> this.setState({amount: parseInt(text)})}
+          onChangeText={(text)=> this.setState({amount: Number(text)})}
         />
         <TextInput
           style={styles.note}
@@ -80,16 +117,14 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   note: {
-    flex: 5,
+    flex: 8,
     fontSize: 15,
-    flexDirection: "row",
+    flexDirection: "column",
     justifyContent: "flex-start",
+    alignItems: "flex-start",
     color: "white"
   },
   doneButton: {
-    flex: 3,
-    flexDirection: "row",
-    justifyContent: "flex-start",
-    alignItems: "stretch"
+
   }
 });

@@ -2,7 +2,8 @@ import React from 'react';
 import {
   Text,
   View,
-  StyleSheet
+  StyleSheet,
+  DeviceEventEmitter
 } from 'react-native';
 import Button from 'react-native-button'
 import PriceCalendar from '../components/PriceCalendar';
@@ -13,8 +14,7 @@ export default class HomeScreen extends React.Component {
       balance: 0
   }
 
-  componentWillMount() {
-    // Retrieve the balance from the local store
+  _retrieveBalance(){
     storage.load({
       key: 'balance'
     }).then(ret=>{
@@ -22,12 +22,41 @@ export default class HomeScreen extends React.Component {
       this.setState({balance: ret});
     }).catch(err=>{
       console.warn(err.message);
+      if (err.name == "NotFoundError") {
+        // CREATE THE BALANCE OBJECT
+        storage.save({
+          key: 'balance',
+          data: 0
+        }).then(ret=>console.log("Created balance entry in storage."))
+        .catch(err=>console.log(err.message))
+      }
     });
   }
 
+  _updateBalance(newBalance) {
+    this.state.balance = newBalance;
+  }
+
+  componentWillMount() {
+    //========= DEBUG ONLY ===========
+    // storage.remove({ key: "balance" })
+    //================================
+    // Add listener for balance update
+    DeviceEventEmitter.addListener('updateBalance', (e)=>{
+      console.log("BALANCE UPDATE CAUGHT!");
+      this._retrieveBalance();
+    });
+    // Retrieve the balance from the local store
+    this._retrieveBalance();
+  }
+
+  shouldComponentUpdate(nextProps, nextState){
+    if (this.state.balance != nextState.balance) return true;
+    return false;
+  }
+
   static navigationOptions = ({navigation})=>{
-    // Setup the button
-    const rbs = (
+    const buttons = (
       <View style={styles.transactionButtons}>
         <Button
           onPress={() => navigation.navigate('Transaction', {mode: 1})}
@@ -44,9 +73,10 @@ export default class HomeScreen extends React.Component {
     );
     return {
       title: "No Money",
-      headerRight: rbs
-    }
+      headerRight: buttons
+    };
   };
+
   render() {
     return (
       <View style={styles.container}>
@@ -72,7 +102,9 @@ const styles = StyleSheet.create({
   },
   balance: {
     flex: 2,
-    alignItems: "flex-end",
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "center",
     fontWeight: "bold",
     fontSize: 50,
     backgroundColor: 'black',
@@ -85,9 +117,10 @@ const styles = StyleSheet.create({
     alignItems: "stretch"
   },
   tButtonContainer: {
-    padding: 15,
+    padding: 20,
     margin: 10,
-    backgroundColor: 'blue'
+    backgroundColor: 'blue',
+    borderRadius: 50
   },
   tButton: {
     color: 'white',

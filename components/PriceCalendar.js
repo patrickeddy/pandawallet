@@ -3,7 +3,8 @@ import {
   Text,
   View,
   Button,
-  StyleSheet
+  StyleSheet,
+  Alert
 } from 'react-native';
 
 import { Calendar } from 'react-native-calendars';
@@ -14,7 +15,8 @@ export default class PriceCalendar extends React.Component {
     return(
       <Calendar
         style={this.props.style}
-        onDayPress={()=> navigate('Transaction')}
+        onDayPress={(day)=> Alert.alert('It Works', JSON.stringify(day))}
+        selectedDayBackgroundColor="blue"
         maxDate={Date()} />
     );
   }
