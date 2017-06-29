@@ -14,32 +14,9 @@ export default class HomeScreen extends React.Component {
       balance: 0
   }
 
-  _retrieveBalance(){
-    storage.load({
-      key: 'balance'
-    }).then(ret=>{
-      // Set the state balance
-      this.setState({balance: ret});
-    }).catch(err=>{
-      console.warn(err.message);
-      if (err.name == "NotFoundError") {
-        // CREATE THE BALANCE OBJECT
-        storage.save({
-          key: 'balance',
-          data: 0
-        }).then(ret=>console.log("Created balance entry in storage."))
-        .catch(err=>console.log(err.message))
-      }
-    });
-  }
-
-  _updateBalance(newBalance) {
-    this.state.balance = newBalance;
-  }
-
   componentWillMount() {
     //========= DEBUG ONLY ===========
-    // storage.remove({ key: "balance" })
+    // global.storage.remove({ key: "balance" })
     //================================
     // Add listener for balance update
     DeviceEventEmitter.addListener('updateBalance', (e)=>{
@@ -48,6 +25,29 @@ export default class HomeScreen extends React.Component {
     });
     // Retrieve the balance from the local store
     this._retrieveBalance();
+  }
+
+  _updateBalance(newBalance) {
+    this.state.balance = newBalance;
+  }
+
+  _retrieveBalance(){
+    global.storage.load({
+      key: 'balance'
+    }).then(ret=>{
+      // Set the state balance
+      this.setState({balance: ret});
+    }).catch(err=>{
+      console.warn(err.message);
+      if (err.name == "NotFoundError") {
+        // CREATE THE BALANCE OBJECT
+        global.storage.save({
+          key: 'balance',
+          data: Number(0)
+        }).then(ret=>console.log("Created balance entry in storage."))
+        .catch(err=>console.log(err.message))
+      }
+    });
   }
 
   shouldComponentUpdate(nextProps, nextState){

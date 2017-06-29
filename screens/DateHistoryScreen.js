@@ -29,7 +29,7 @@ export default class DayHistoryScreen extends React.Component {
   };
 
   render(){
-    console.log(this.state.transactions);
+    console.log("Transactions: " + this.state.transactions);
     let list = null;
     for (let transaction in this.state.transactions){
       <Text>Amount: {transaction.amount} Note: {transaction.note}</Text>

@@ -22,45 +22,55 @@ export default class TransactionScreen extends React.Component {
     // Add or subtract the amount based on the current transaction node from the total balance.
     console.log(`State amount ${this.state.amount} and note is: ${this.state.note}`);
 
-    const { mode, amount, note } = this.state;
-    const { updateBalance } = this.props.navigation.state.params;
-
     // First get the balance from local store.
-    storage.load({
+    global.storage.load({
       key: 'balance'
     }).then(ret=>{
-      const balance = ret;
-      this._updateBalance(balance);
+      this._updateBalance(ret);
     }).catch(err=>{
       console.warn(err.message);
+      // Return 0 for the retrieved balance
+      this._updateBalance(0);
     });
   }
 
-  _updateBalance(balance){
+  _updateBalance(newBalance){
+    let balance = newBalance;
     const { goBack } = this.props.navigation;
 
     // Do the calculation for account balance.
     const amountVector = this.state.mode == 0 ? (0 - this.state.amount) : this.state.amount;
     balance = balance + amountVector;
     console.log("Balance is " + balance);
+
+    // Save the balance
+    global.storage.save({
+      key: 'balance',
+      data: Number(balance),
+      expires: null
+    }).then(ret=>{
+      this._addTransactionToDate(ret, amountVector);
+    }).catch(err=> {
+      console.warn(err.name);
+      console.warn(err.message);
+    });
+
+  }
+
+  _addTransactionToDate(ret, amountVector){
     // Determine the date
     let date = Date(); // default is today
     const passedInDate = this.props.navigation.state.params.date;
     if (passedInDate){
       date = passedInDate;
     }
+    console.log("Executing...");
     // Add this transaction to the current date
-    global.dhHelper.addTransaction(date.dateString, {amount: amountVector, note: this.state.note});
-
-    // Save the balance
-    storage.save({
-      key: 'balance',
-      data: balance
-    }).then(ret=>{
-      // Call the updateBalance callback method and then navigate back
+    global.dhHelper.addTransaction(date.dateString, {amount: amountVector, note: this.state.note})
+    .then(ret=>{
+      console.log("Added transaction");
       DeviceEventEmitter.emit('updateBalance', {});
-      console.log("Balance update emitted");
-      this.goBack();
+      goBack();
     }).catch(err=>{
       console.warn(err.message);
     });
