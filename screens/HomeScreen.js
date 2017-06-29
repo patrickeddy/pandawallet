@@ -117,13 +117,17 @@ const styles = StyleSheet.create({
     alignItems: "stretch"
   },
   tButtonContainer: {
-    padding: 20,
+    paddingTop: 15,
+    paddingBottom: 15,
+    paddingLeft: 25,
+    paddingRight: 25,
     margin: 10,
-    backgroundColor: 'blue',
-    borderRadius: 50
+    backgroundColor: 'black',
+    borderRadius: 35
   },
   tButton: {
     color: 'white',
-    borderRadius: 100
+    borderRadius: 100,
+    fontSize: 20
   }
 });

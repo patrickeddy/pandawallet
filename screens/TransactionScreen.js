@@ -31,23 +31,35 @@ export default class TransactionScreen extends React.Component {
       key: 'balance'
     }).then(ret=>{
       let balance = ret;
-      // Do the calculation for account balance.
-      balance = this.state.mode == 0 ? balance - this.state.amount : balance + this.state.amount;
-      //======
-      //TODO: Save the date object to a master date object.
-      //======
-      // Save the objects
-      storage.save({
-        key: 'balance',
-        data: balance
-      }).then(ret=>{
-        // Call the updateBalance callback method and then navigate back
-        DeviceEventEmitter.emit('updateBalance', {});
-        console.log("Balance update emitted");
-        goBack();
-      }).catch(err=>{
-        console.warn(err.message);
-      });
+      _updateBalance(balance);
+    }).catch(err=>{
+      console.warn(err.message);
+    });
+  }
+
+  _updateBalance(balance){
+    // Do the calculation for account balance.
+    const amountVector = this.state.mode == 0 ? -this.state.amount : this.state.amount;
+    balance = balance + amountVector;
+
+    // Determine the date
+    let date = Date(); // default is today
+    const passedInDate = this.props.navigation.state.params.date;
+    if (passedInDate){
+      date = passedInDate;
+    }
+    // Add this transaction to the current date
+    global.dhHelper.addTransaction(date.dateString, {amount: amountVector, note: this.state.note});
+
+    // Save the balance
+    storage.save({
+      key: 'balance',
+      data: balance
+    }).then(ret=>{
+      // Call the updateBalance callback method and then navigate back
+      DeviceEventEmitter.emit('updateBalance', {});
+      console.log("Balance update emitted");
+      goBack();
     }).catch(err=>{
       console.warn(err.message);
     });
@@ -106,6 +118,7 @@ const styles = StyleSheet.create({
     flex:1,
     flexDirection: "column",
     justifyContent: "flex-start",
+    alignItems: "stretch",
     backgroundColor: 'black'
   },
   amount: {

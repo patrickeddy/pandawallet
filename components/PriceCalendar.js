@@ -15,8 +15,9 @@ export default class PriceCalendar extends React.Component {
     return(
       <Calendar
         style={this.props.style}
-        onDayPress={(day)=> Alert.alert('It Works', JSON.stringify(day))}
+        onDayPress={(day)=> navigate('DateHistory', {day})}
         selectedDayBackgroundColor="blue"
+        hideExtraDays={true}
         maxDate={Date()} />
     );
   }
