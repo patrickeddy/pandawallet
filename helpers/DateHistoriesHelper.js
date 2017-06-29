@@ -53,14 +53,11 @@ class DateHistory{
 
   // Adds the transaction to this day
   addTransaction(/* Transaction */ transaction) {
-    return new Promise((res, rej)=>{
-      console.log("Creating transaction...");
-      const t = new Transaction(this.transactions.length, transaction.amount, transaction.note);
-      console.log("Created transaction...");
-      this.transactions.push(t);
-      console.log("Added transaction");
-      res(0);
-    });
+    console.log("Creating transaction...");
+    const t = new Transaction(this.transactions.length, transaction.amount, transaction.note);
+    console.log("Created transaction...");
+    this.transactions.push(t);
+    console.log("Added transaction");
   }
 
   // Removes the transaction from this day
@@ -81,6 +78,7 @@ export default class DateHistoriesHelper{
     }).then(ret=>{
       // Retrieve the datehistories from local store.
       this.histories = ret;
+      console.log("DateHistories: " + JSON.stringify(ret));
     }).catch(err=>{
       console.log(err.message);
       // Is there no entry for date histories?
@@ -123,22 +121,15 @@ export default class DateHistoriesHelper{
 
   // Adds the transaction
   addTransaction(/* String */ date, /* Transaction */ transaction){
-    return new Promise((res, rej)=>{
-      // Get our day in question.
-      const day = this.histories[date];
-      let ts = [];
-      // Get the existing transactions
-      if (day.transactions && day.transactions.length > 0) ts = day.transactions;
-      // Create the object
-      const dh = new DateHistory(date, [ts]);
-      // Add the new transaction
-      dh.addTransaction(transaction)
-      .then(ret=>{
-        res(0);
-      }).catch(err=>{
-        rej(err);
-      });
-    });
+    // Get our day in question.
+    const day = this.histories[date];
+    let ts = [];
+    // Get the existing transactions
+    if (day.transactions && day.transactions.length > 0) ts = day.transactions;
+    // Create the object
+    const dh = new DateHistory(date, [ts]);
+    // Add the new transaction
+    dh.addTransaction(transaction);
   }
 
   // Removes the transaction

@@ -49,15 +49,17 @@ export default class TransactionScreen extends React.Component {
       data: Number(balance),
       expires: null
     }).then(ret=>{
-      this._addTransactionToDate(ret, amountVector);
+      // Add the transaction to this date
+      this._addTransactionToDate(amountVector);
+      DeviceEventEmitter.emit('updateBalance', {});
+      goBack();
     }).catch(err=> {
       console.warn(err.name);
       console.warn(err.message);
     });
-
   }
 
-  _addTransactionToDate(ret, amountVector){
+  _addTransactionToDate(amountVector){
     // Determine the date
     let date = Date(); // default is today
     const passedInDate = this.props.navigation.state.params.date;
@@ -66,14 +68,8 @@ export default class TransactionScreen extends React.Component {
     }
     console.log("Executing...");
     // Add this transaction to the current date
-    global.dhHelper.addTransaction(date.dateString, {amount: amountVector, note: this.state.note})
-    .then(ret=>{
-      console.log("Added transaction");
-      DeviceEventEmitter.emit('updateBalance', {});
-      goBack();
-    }).catch(err=>{
-      console.warn(err.message);
-    });
+    global.dhHelper.addTransaction(date.dateString, {amount: amountVector, note: this.state.note});
+    console.log("Added transaction");
   }
 
   componentWillMount() {
