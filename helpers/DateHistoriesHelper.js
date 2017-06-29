@@ -69,9 +69,9 @@ export default class DateHistoriesHelper{
 
   histories = {};
 
-  constructor(storage) {
+  constructor() {
     // Load or create
-    storage.load({
+    global.storage.load({
       key: 'datehistories'
     }).then(ret=>{
       // Retrieve the datehistories from local store.
@@ -81,7 +81,7 @@ export default class DateHistoriesHelper{
       // Is there no entry for date histories?
       if (err.name == "NotFoundError") {
         // Create an entry
-        storage.save({
+        global.storage.save({
           key: 'datehistories',
           data: {}
         }).then(datehistories=>{
@@ -95,7 +95,7 @@ export default class DateHistoriesHelper{
 
   // Saves the histories array to local storage.
   _save(){
-    storage.save({
+    global.storage.save({
       key: 'datehistories',
       data: this.histories
     }).then(ret=>{
@@ -117,15 +117,9 @@ export default class DateHistoriesHelper{
 
   // Adds the transaction
   addTransaction(/* String */ date, /* Transaction */ transaction){
-    // Date exists?
     const day = this.histories[date];
-    if (day){
-      // Add the transaction to the date
-      day.addTransaction(transaction);
-    } else {
-      // Create the date and then add the transaction
-      this.histories[date] = new DateHistory(date, [transaction]);
-    }
+    const dh = new DateHistory(date, [...day.transactions]);
+    dh.addTransaction(transaction);
     this._save();
   }
 

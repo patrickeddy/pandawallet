@@ -23,25 +23,26 @@ export default class TransactionScreen extends React.Component {
     console.log(`State amount ${this.state.amount} and note is: ${this.state.note}`);
 
     const { mode, amount, note } = this.state;
-    const { goBack } = this.props.navigation;
     const { updateBalance } = this.props.navigation.state.params;
 
     // First get the balance from local store.
     storage.load({
       key: 'balance'
     }).then(ret=>{
-      let balance = ret;
-      _updateBalance(balance);
+      const balance = ret;
+      this._updateBalance(balance);
     }).catch(err=>{
       console.warn(err.message);
     });
   }
 
   _updateBalance(balance){
-    // Do the calculation for account balance.
-    const amountVector = this.state.mode == 0 ? -this.state.amount : this.state.amount;
-    balance = balance + amountVector;
+    const { goBack } = this.props.navigation;
 
+    // Do the calculation for account balance.
+    const amountVector = this.state.mode == 0 ? (0 - this.state.amount) : this.state.amount;
+    balance = balance + amountVector;
+    console.log("Balance is " + balance);
     // Determine the date
     let date = Date(); // default is today
     const passedInDate = this.props.navigation.state.params.date;
@@ -59,7 +60,7 @@ export default class TransactionScreen extends React.Component {
       // Call the updateBalance callback method and then navigate back
       DeviceEventEmitter.emit('updateBalance', {});
       console.log("Balance update emitted");
-      goBack();
+      this.goBack();
     }).catch(err=>{
       console.warn(err.message);
     });

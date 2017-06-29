@@ -12,10 +12,13 @@ export default class DayHistoryScreen extends React.Component {
   }
 
   componentWillMount(){
-    const day = navigation.state.params.day.dateString;
-    this.setState({ date: day });
-
-    this.state.transactions = global.dhHelper.getTransactions(this.state.day);
+    const day = this.props.navigation.state.params.day;
+    if (day){
+      this.setState({
+        date: day.dateString,
+        transactions: global.dhHelper.getTransactions(day.dateString)
+      });
+    }
   }
 
   static navigationOptions = ({navigation}) => {
@@ -26,6 +29,7 @@ export default class DayHistoryScreen extends React.Component {
   };
 
   render(){
+    console.log(this.state.transactions);
     let list = null;
     for (let transaction in this.state.transactions){
       <Text>Amount: {transaction.amount} Note: {transaction.note}</Text>
