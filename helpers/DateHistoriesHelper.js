@@ -38,38 +38,41 @@ class Transaction{
 }
 
 class DateHistory{
-
-  transactions = [];
-
   constructor(/* String */ date, /* Array[Transaction] */ transactions){
     this.date = date;
     this.transactions = transactions;
   }
 
   // Returns the transactions
-  get transactions() {
+  get getTransactions() {
     return this.transactions;
   }
 
+  set setTransactions(transactions){
+    this.transactions = transactions;
+  }
+
   // Adds the transaction to this day
-  addTransaction(/* Transaction */ transaction) {
+  addTransactionToDate(/* Transaction */ transaction) {
     console.log("Creating transaction...");
-    const t = new Transaction(this.transactions.length, transaction.amount, transaction.note);
-    console.log("Created transaction...");
+    let id = 0;
+    if (this.transactions){
+      id = this.transactions.length;
+    } else {
+      this.transactions = [];
+    }
+    const t = new Transaction(id, transaction.amount, transaction.note);
     this.transactions.push(t);
     console.log("Added transaction");
   }
 
   // Removes the transaction from this day
-  removeTransaction(/* Int */ id) {
-    const t = new Transaction(this.transactions.length, amount, note);
-    this.transactions.remove(t);
+  removeTransactionFromDate(/* Int */ id) {
+    this.transactions.splice(this.transactions.length-1, 1);
   }
 }
 
 export default class DateHistoriesHelper{
-
-  histories = {};
 
   constructor() {
     // Load or create
@@ -111,33 +114,36 @@ export default class DateHistoriesHelper{
 
   // Gets the transactions for a specified date
   getTransactions(/* String */ date){
-    const day = this.histories[date];
-    if (day){
-      return day.transactions;
+    console.log("TRANSACTION SCREEN");
+    console.log("Date is: " + date);
+    if (this.histories && this.histories[date]){
+      console.log("Transactions received.");
+      return this.histories[date].transactions;
     } else {
+      console.log("No transactions.");
       return [];
     }
   }
 
   // Adds the transaction
   addTransaction(/* String */ date, /* Transaction */ transaction){
+    console.log("datestring is: " + date);
     // Get our day in question.
-    const day = this.histories[date];
-    let ts = [];
+    const day = new DateHistory(date);
+    const recordedDay = this.histories[date];
     // Get the existing transactions
-    if (day.transactions && day.transactions.length > 0) ts = day.transactions;
-    // Create the object
-    const dh = new DateHistory(date, [ts]);
-    // Add the new transaction
-    dh.addTransaction(transaction);
+    if (recordedDay && recordedDay.transactions && recordedDay.transactions.length > 0){
+      day.setTransactions = recordedDay.transactions;
+    }
+    console.log("Adding transaction to date...");
+    day.addTransactionToDate(transaction);
+    // Set the history for this day.
+    this.histories[date] = day;
+    this._save();
   }
 
   // Removes the transaction
   removeTransaction(/* String */date, /* Int */ id){
-    let day = this.histories[date];
-    if (day) {
-      day.removeTransaction(id);
-      this._save();
-    }
+    //TODO:
   }
 }

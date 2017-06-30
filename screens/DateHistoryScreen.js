@@ -13,10 +13,11 @@ export default class DayHistoryScreen extends React.Component {
 
   componentWillMount(){
     const day = this.props.navigation.state.params.day;
+    const dateString = new Date(day.dateString).toDateString();
     if (day){
       this.setState({
-        date: day.dateString,
-        transactions: global.dhHelper.getTransactions(day.dateString)
+        date: dateString,
+        transactions: global.dhHelper.getTransactions(dateString)
       });
     }
   }
@@ -33,7 +34,7 @@ export default class DayHistoryScreen extends React.Component {
     return (
       <View>
         {this.state.transactions.map((transaction)=>{
-          return <Text>Amount: {transaction.amount} Note: {transaction.note}</Text>
+          return <Text key={transaction.id}>Amount: {transaction.amount} Note: {transaction.note}</Text>
         })}
       </View>
     );

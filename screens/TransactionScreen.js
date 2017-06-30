@@ -61,14 +61,15 @@ export default class TransactionScreen extends React.Component {
 
   _addTransactionToDate(amountVector){
     // Determine the date
-    let date = Date(); // default is today
+    let date = new Date(); // default is today
     const passedInDate = this.props.navigation.state.params.date;
-    if (passedInDate){
+    if (typeof passedInDate != 'undefined'){
       date = passedInDate;
     }
     console.log("Executing...");
+    console.log("Date before add transaction is: " + date.toDateString());
     // Add this transaction to the current date
-    global.dhHelper.addTransaction(date.dateString, {amount: amountVector, note: this.state.note});
+    global.dhHelper.addTransaction(date.toDateString(), {amount: amountVector, note: this.state.note});
     console.log("Added transaction");
   }
 

@@ -17,6 +17,7 @@ export default class HomeScreen extends React.Component {
   componentWillMount() {
     //========= DEBUG ONLY ===========
     // global.storage.remove({ key: "balance" })
+    // global.storage.remove({ key: "datehistories" });
     //================================
     // Add listener for balance update
     DeviceEventEmitter.addListener('updateBalance', (e)=>{
