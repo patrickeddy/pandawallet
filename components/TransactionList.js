@@ -6,7 +6,8 @@ import {
   StyleSheet,
   Alert,
   Button,
-  TouchableHighlight
+  TouchableHighlight,
+  DeviceEventEmitter
 } from 'react-native';
 import MoneyText from '../components/MoneyText';
 import DateHistoriesHelper from '../helpers/DateHistoriesHelper';
@@ -34,6 +35,18 @@ export default class TransactionList extends React.PureComponent {
   state = {
     deleted: (new Map: Map<string, boolean>)
   };
+
+  componentDidMount(){
+    DeviceEventEmitter.addListener("addedTransactionToDate", (e)=>{
+      this._refreshList();
+    });
+  }
+
+  _refreshList(){
+    this.setState({
+      deleted: (new Map: Map<string, boolean>)
+    });
+  }
 
   // Gets the key from the transaction.
   _keyExtractor = (item, index) => item.id;
@@ -64,7 +77,7 @@ export default class TransactionList extends React.PureComponent {
   }
 
   _renderItem = ({item})=>{
-      if (!this.state.deleted.get(item.id)) {
+      if (!this.state.deleted.get(item.id) && !this.state.shouldUpdate) {
         return (
           <ListItem
             id={item.id}

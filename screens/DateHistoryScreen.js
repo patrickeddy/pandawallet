@@ -14,7 +14,7 @@ export default class DayHistoryScreen extends React.Component {
 
   state: {
     date: "",
-    transactions: []
+    transactions: [],
   }
 
   componentWillMount(){
@@ -26,26 +26,23 @@ export default class DayHistoryScreen extends React.Component {
   }
 
   _getTransactions(dateString){
+    console.log("datestring after add: " + dateString);
     this.setState({
       date: dateString,
       transactions: global.dhHelper.getTransactions(dateString)
     });
   }
 
-  _addedTransactionCallback(){
-    _getTransactions(this.state.date);
-  }
-
   static navigationOptions = ({navigation}) => {
-    const day = navigation.state.params.day.dateString;
+    const day = navigation.state.params.day;
     const dateString = DateHistoriesHelper.getStandardizedDateString(day.dateString);
-    
+
     const buttons = <TransactionButtons
                       navigation={navigation}
-                      addedTransactionCallback={this._addedTransactionCallback}
+                      date={dateString}
                     />
     return {
-      title: day,
+      title: dateString,
       headerRight: buttons
     };
   };
@@ -54,7 +51,9 @@ export default class DayHistoryScreen extends React.Component {
     console.log("Transactions: " + this.state.transactions);
     return (
       <View style={styles.container}>
-        <TransactionList navigation={this.props.navigation} transactions={this.state.transactions} />
+        <TransactionList
+            navigation={this.props.navigation}
+            transactions={this.state.transactions}/>
       </View>
     );
   }

@@ -8,14 +8,16 @@ import Button from 'react-native-button';
 
 export default class TransactionButtons extends React.PureComponent{
   render(){
-    const nav = this.props.navigation.state.params;
-    const b1Params = { mode: 1 };
-    const b2Params = { mode: 0 };
-    if (nav){
-      b1Params.date = nav.date;
-      b2Params.date = nav.date;
+    const date = this.props.date;
+    const b1Params = { mode: 1};
+    const b2Params = { mode: 0};
+    if (date){
+      b1Params.date = date;
+      b2Params.date = date;
     }
 
+    console.log(JSON.stringify(b1Params));
+    console.log(JSON.stringify(b2Params));
     return (
       <View style={styles.transactionButtons}>
         <Button

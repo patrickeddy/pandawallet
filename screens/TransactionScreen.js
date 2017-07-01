@@ -29,25 +29,29 @@ export default class TransactionScreen extends React.Component {
 
   _updateBalance(){
     const { goBack } = this.props.navigation;
+    const { callback } = this.props.navigation.state.params;
     // Calculation the amount
     const amountVector = this.state.mode == 0 ? (0 - this.state.amount) : this.state.amount;
     // Add the amount to the balance
     BalanceHelper.add(amountVector)
     .then(ret=>{
       // Add the transaction to this date
-      this._addTransactionToDate(amountVector, this.props.addTransactionCallback);
+      this._addTransactionToDate(amountVector);
       goBack();
+      DeviceEventEmitter.emit("addedTransactionToDate", {});
     }).catch(err=>{
       console.warn(err.name);
       console.warn(err.message);
     });
   }
 
-  _addTransactionToDate(amountVector, callback){
+  _addTransactionToDate(amountVector){
     // Determine the date
     let date = new Date(); // default is today
-    const passedInDate = this.props.date;
+    const passedInDate = this.props.navigation.state.params.date;
+    console.log("passindate: " + passedInDate);
     if (passedInDate && typeof passedInDate != 'undefined'){
+      console.log("Date passed : " + passedInDate);
       date = new Date(passedInDate);
     }
     console.log("Executing...");
@@ -55,7 +59,6 @@ export default class TransactionScreen extends React.Component {
     // Add this transaction to the current date
     global.dhHelper.addTransaction(date.toDateString(), {amount: amountVector, note: this.state.note});
     console.log("Added transaction");
-    if (passedInDate) callback(); // do the callback to say that we've added the transaction if they've passed in a date.
   }
 
   componentWillMount() {
