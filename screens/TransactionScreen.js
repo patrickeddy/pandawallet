@@ -36,7 +36,6 @@ export default class TransactionScreen extends React.Component {
     .then(ret=>{
       // Add the transaction to this date
       this._addTransactionToDate(amountVector);
-      DeviceEventEmitter.emit('updateBalance', {});
       goBack();
     }).catch(err=>{
       console.warn(err.name);
@@ -130,7 +129,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 40,
     color: "white",
-    width: 350
+    width: 350,
+    borderBottomWidth: 1,
+    borderColor: "dimgray"
   },
   noteContainer: {
     flex: 8,
@@ -144,8 +145,6 @@ const styles = StyleSheet.create({
     width: 350,
     height: 200,
     textAlignVertical: 'top',
-    borderTopWidth: 1,
-    borderColor: "dimgray"
   },
   doneButton: {
 

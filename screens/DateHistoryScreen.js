@@ -2,7 +2,8 @@ import React from 'react';
 import {
   View,
   Text,
-  StyleSheet
+  StyleSheet,
+  DeviceEventEmitter
 } from 'react-native';
 import MoneyText from '../components/MoneyText';
 import TransactionList from '../components/TransactionList';
@@ -19,11 +20,15 @@ export default class DayHistoryScreen extends React.Component {
     const day = this.props.navigation.state.params.day;
     if (day){
       const dateString = DateHistoriesHelper.getStandardizedDateString(day.dateString);
-      this.setState({
-        date: dateString,
-        transactions: global.dhHelper.getTransactions(dateString)
-      });
+      this._getTransactions(dateString);
     }
+  }
+
+  _getTransactions(dateString){
+    this.setState({
+      date: dateString,
+      transactions: global.dhHelper.getTransactions(dateString)
+    });
   }
 
   static navigationOptions = ({navigation}) => {

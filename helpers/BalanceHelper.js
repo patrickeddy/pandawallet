@@ -1,3 +1,7 @@
+import {
+  DeviceEventEmitter
+} from 'react-native';
+
 export default class BalanceHelper{
   // Gets the balance from local store or creates it.
   static get(){
@@ -30,10 +34,11 @@ export default class BalanceHelper{
           key: 'balance',
           data: Number(balance),
           expires: null
-        }).then(ret=>res(ret)) // return the new balance
-        .catch(err=> rej(err));
+        }).then(ret=>{
+          res(ret); // return the balance
+          DeviceEventEmitter.emit('updateBalance', {});
+        }).catch(err=> rej(err));
       }).catch(err=> rej(err));
     });
-
   }
 }

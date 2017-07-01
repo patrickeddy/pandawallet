@@ -28,6 +28,11 @@ class ListItem extends React.PureComponent {
 }
 
 export default class TransactionList extends React.PureComponent {
+
+  state = {
+    deleted: (new Map: Map<string, boolean>)
+  };
+
   // Gets the key from the transaction.
   _keyExtractor = (item, index) => item.id;
 
@@ -45,20 +50,29 @@ export default class TransactionList extends React.PureComponent {
       {
         text: 'Delete',
         onPress: ()=> {
-          global.dhHelper.removeTransaction(dateString, id)
+          global.dhHelper.removeTransaction(dateString, item.id);
+          this.setState((state)=>{
+            const deleted = new Map(state.deleted);
+            deleted.set(item.id, true);
+            return {deleted};
+          })
         }
       }
     ]);
   }
 
-  _renderItem = ({item})=>(
-      <ListItem
-        id={item.id}
-        item={item}
-        style={styles.tContainer}
-        onPressItem={this._onPressItem}
-        title={item.note}/>
-  );
+  _renderItem = ({item})=>{
+      if (!this.state.deleted.get(item.id)) {
+        return (
+          <ListItem
+            id={item.id}
+            item={item}
+            style={styles.tContainer}
+            onPressItem={this._onPressItem}
+            title={item.note}/>
+        );
+      }
+  };
 
   render() {
     return (

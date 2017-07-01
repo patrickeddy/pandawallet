@@ -160,11 +160,11 @@ export default class DateHistoriesHelper{
   // Removes the transaction
   removeTransaction(/* String */date, /* Int */ id){
     const day = this._getDHWithTransactionsForDate(date);
-    day.removeTransactionFromDate(id);
-    this.histories[date] = day; // save the new date history transactions
-
     const transaction = day.getTransaction(id); // remove the transaction amount from balance
     BalanceHelper.add(0 - transaction.amount);
+
+    day.removeTransactionFromDate(id); // remove the transaction from the date
+    this.histories[date] = day; // save the new date history transactions
     this._save();
   }
 }
