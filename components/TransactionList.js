@@ -13,7 +13,7 @@ import DateHistoriesHelper from '../helpers/DateHistoriesHelper';
 class ListItem extends React.PureComponent {
   _onPress = () => {
     console.log("On press - item");
-    this.props.onPressItem(this.props.id);
+    this.props.onPressItem(this.props.item);
   };
 
   render() {
@@ -31,12 +31,12 @@ export default class TransactionList extends React.PureComponent {
   // Gets the key from the transaction.
   _keyExtractor = (item, index) => item.id;
 
-  _onPressItem = (id: number)=>{
+  _onPressItem = (item)=>{
     console.log("onPress - list");
     const day = this.props.navigation.state.params.day;
     const dateString = DateHistoriesHelper.getStandardizedDateString(day.dateString);
     // Prompt for delete item.
-    Alert.alert("Delete?", "",
+    Alert.alert("Delete?", `${item.amount} - ${item.note}`,
     [
       {
         text: 'Cancel',
