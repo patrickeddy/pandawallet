@@ -6,6 +6,7 @@ import {
   DeviceEventEmitter
 } from 'react-native';
 import Button from 'react-native-button'
+import MoneyText from '../components/MoneyText';
 import PriceCalendar from '../components/PriceCalendar';
 
 export default class HomeScreen extends React.Component {
@@ -73,7 +74,7 @@ export default class HomeScreen extends React.Component {
       </View>
     );
     return {
-      title: "No Money",
+      title: global.APPNAME,
       headerRight: buttons
     };
   };
@@ -81,7 +82,7 @@ export default class HomeScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.balance}>{this.state.balance}</Text>
+        <MoneyText style={styles.balance} amount={this.state.balance} />
         <PriceCalendar navigation={this.props.navigation} style={styles.calendar}/>
       </View>
     );

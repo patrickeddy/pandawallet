@@ -1,8 +1,12 @@
 import React from 'react';
 import {
   View,
-  Text
+  Text,
+  StyleSheet
 } from 'react-native';
+import MoneyText from '../components/MoneyText';
+import TransactionList from '../components/TransactionList';
+import DateHistoriesHelper from '../helpers/DateHistoriesHelper';
 
 export default class DayHistoryScreen extends React.Component {
 
@@ -13,8 +17,8 @@ export default class DayHistoryScreen extends React.Component {
 
   componentWillMount(){
     const day = this.props.navigation.state.params.day;
-    const dateString = new Date(day.dateString).toDateString();
     if (day){
+      const dateString = DateHistoriesHelper.getStandardizedDateString(day.dateString);
       this.setState({
         date: dateString,
         transactions: global.dhHelper.getTransactions(dateString)
@@ -32,11 +36,18 @@ export default class DayHistoryScreen extends React.Component {
   render(){
     console.log("Transactions: " + this.state.transactions);
     return (
-      <View>
-        {this.state.transactions.map((transaction)=>{
-          return <Text key={transaction.id}>Amount: {transaction.amount} Note: {transaction.note}</Text>
-        })}
+      <View style={styles.container}>
+        <TransactionList navigation={this.props.navigation} transactions={this.state.transactions} />
       </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: "stretch",
+    backgroundColor: 'black',
+  },
+});

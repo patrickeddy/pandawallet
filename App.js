@@ -13,6 +13,8 @@ export default class App extends React.Component {
   }
 }
 
+global.APPNAME = "Panda Wallet";
+
 const storage = new Storage({
   size: 1000,
   storageBackend: AsyncStorage,

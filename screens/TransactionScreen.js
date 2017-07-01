@@ -114,6 +114,7 @@ export default class TransactionScreen extends React.Component {
           placeholder="Write a note."
           editable={true}
           multiline={true}
+          autoCapitalize='sentences'
           onChangeText={(text)=> this.setState({note: text})}
         />
       </View>
@@ -126,11 +127,12 @@ const styles = StyleSheet.create({
     flex:1,
     flexDirection: "column",
     justifyContent: "flex-start",
-    alignItems: "stretch",
-    backgroundColor: 'black'
+    alignItems: "flex-start",
+    backgroundColor: 'black',
+    marginTop: 10,
   },
   amount: {
-    flex: 2,
+    height: 15,
     fontSize: 35,
     flexDirection: "row",
     justifyContent: "center",
@@ -138,11 +140,11 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   note: {
-    flex: 8,
+    height: 50,
     fontSize: 15,
     flexDirection: "column",
     justifyContent: "flex-start",
-    alignItems: "flex-start",
+    alignItems: "stretch",
     color: "white"
   },
   doneButton: {

@@ -1,7 +1,7 @@
 {
-  "name": "nomoney",
-  "version": "0.0.0",
-  "description": "Hello Expo!",
+  "name": "Panda Wallet",
+  "version": "0.0.1",
+  "description": "Keep track of your money.",
   "author": null,
   "private": true,
   "main": "node_modules/expo/AppEntry.js",

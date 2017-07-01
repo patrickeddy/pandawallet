@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "nomoney",
-    "description": "An empty new project",
-    "slug": "nomoney",
+    "name": "Panda Wallet",
+    "description": "Keep track of your money.",
+    "slug": "pandawallet",
     "privacy": "public",
     "sdkVersion": "18.0.0",
     "version": "1.0.0",

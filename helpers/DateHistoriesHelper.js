@@ -68,11 +68,16 @@ class DateHistory{
 
   // Removes the transaction from this day
   removeTransactionFromDate(/* Int */ id) {
-    this.transactions.splice(this.transactions.length-1, 1);
+    this.transactions.splice(id, 1);
   }
 }
 
 export default class DateHistoriesHelper{
+
+  // Helper method for those pesky param dates
+  static getStandardizedDateString(dateString){
+    return new Date(dateString).toDateString();
+  }
 
   constructor() {
     // Load or create
@@ -125,16 +130,21 @@ export default class DateHistoriesHelper{
     }
   }
 
-  // Adds the transaction
-  addTransaction(/* String */ date, /* Transaction */ transaction){
-    console.log("datestring is: " + date);
-    // Get our day in question.
+  _getDHWithTransactionsForDate(date){
     const day = new DateHistory(date);
     const recordedDay = this.histories[date];
     // Get the existing transactions
     if (recordedDay && recordedDay.transactions && recordedDay.transactions.length > 0){
       day.setTransactions = recordedDay.transactions;
     }
+    return day;
+  }
+
+  // Adds the transaction
+  addTransaction(/* String */ date, /* Transaction */ transaction){
+    console.log("datestring is: " + date);
+    // Get our day in question.
+    const day = this._getDHWithTransactionsForDate(date);
     console.log("Adding transaction to date...");
     day.addTransactionToDate(transaction);
     // Set the history for this day.
@@ -144,6 +154,8 @@ export default class DateHistoriesHelper{
 
   // Removes the transaction
   removeTransaction(/* String */date, /* Int */ id){
-    //TODO:
+    const day = this._getDHWithTransactionsForDate(date);
+    day.removeTransactionFromDate(id);
+    this._save();
   }
 }
