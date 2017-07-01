@@ -5,7 +5,8 @@ import {
   FlatList,
   StyleSheet,
   Alert,
-  Button
+  Button,
+  TouchableHighlight
 } from 'react-native';
 import MoneyText from '../components/MoneyText';
 import DateHistoriesHelper from '../helpers/DateHistoriesHelper';
@@ -18,11 +19,12 @@ class ListItem extends React.PureComponent {
 
   render() {
     return (
-      <View {...this.props}>
-        <MoneyText style={styles.amount} amount={this.props.item.amount} />
-        <Text style={styles.note}>{this.props.item.note}</Text>
-        <Button title="Delete" onPress={this._onPress} />
-      </View>
+      <TouchableHighlight {...this.props} onPress={this._onPress}>
+        <View>
+          <MoneyText style={styles.amount} amount={this.props.item.amount} />
+          <Text style={styles.note}>{this.props.item.note}</Text>
+        </View>
+      </TouchableHighlight>
     );
   }
 }

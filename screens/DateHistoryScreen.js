@@ -8,11 +8,12 @@ import {
 import MoneyText from '../components/MoneyText';
 import TransactionList from '../components/TransactionList';
 import DateHistoriesHelper from '../helpers/DateHistoriesHelper';
+import TransactionButtons from '../components/TransactionButtons';
 
 export default class DayHistoryScreen extends React.Component {
 
   state: {
-    day: "",
+    date: "",
     transactions: []
   }
 
@@ -31,10 +32,21 @@ export default class DayHistoryScreen extends React.Component {
     });
   }
 
+  _addedTransactionCallback(){
+    _getTransactions(this.state.date);
+  }
+
   static navigationOptions = ({navigation}) => {
     const day = navigation.state.params.day.dateString;
+    const dateString = DateHistoriesHelper.getStandardizedDateString(day.dateString);
+    
+    const buttons = <TransactionButtons
+                      navigation={navigation}
+                      addedTransactionCallback={this._addedTransactionCallback}
+                    />
     return {
-      title: day
+      title: day,
+      headerRight: buttons
     };
   };
 

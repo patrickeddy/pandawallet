@@ -9,6 +9,7 @@ import Button from 'react-native-button'
 import MoneyText from '../components/MoneyText';
 import PriceCalendar from '../components/PriceCalendar';
 import BalanceHelper from '../helpers/BalanceHelper.js';
+import TransactionButtons from '../components/TransactionButtons';
 
 export default class HomeScreen extends React.Component {
 
@@ -46,21 +47,7 @@ export default class HomeScreen extends React.Component {
   }
 
   static navigationOptions = ({navigation})=>{
-    const buttons = (
-      <View style={styles.transactionButtons}>
-        <Button
-          onPress={() => navigation.navigate('Transaction', {mode: 1})}
-          title="+"
-          containerStyle={styles.tButtonContainer}
-          style={styles.tButton}
-        >+</Button>
-        <Button
-          onPress={() => navigation.navigate('Transaction', {mode: 0})}
-          containerStyle={styles.tButtonContainer}
-          style={styles.tButton}
-        >-</Button>
-      </View>
-    );
+    const buttons = <TransactionButtons navigation={navigation}/>
     return {
       title: global.APPNAME,
       headerRight: buttons
@@ -84,12 +71,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'stretch'
   },
-  transactionButtons: {
-    flex: 1,
-    justifyContent: "flex-end",
-    alignItems: "center",
-    flexDirection: "row",
-  },
   balance: {
     flex: 2,
     flexDirection: "row",
@@ -106,18 +87,4 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     alignItems: "stretch"
   },
-  tButtonContainer: {
-    paddingTop: 15,
-    paddingBottom: 15,
-    paddingLeft: 25,
-    paddingRight: 25,
-    margin: 10,
-    backgroundColor: 'black',
-    borderRadius: 35
-  },
-  tButton: {
-    color: 'white',
-    borderRadius: 100,
-    fontSize: 20
-  }
 });
