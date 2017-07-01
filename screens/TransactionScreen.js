@@ -99,7 +99,7 @@ export default class TransactionScreen extends React.Component {
         <View style={styles.noteContainer}>
           <TextInput
             style={styles.note}
-            placeholder="Eggs, gas, paycheck, etc."
+            placeholder="Write note."
             editable={true}
             multiline={true}
             autoCapitalize='sentences'

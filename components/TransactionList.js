@@ -55,7 +55,7 @@ export default class TransactionList extends React.PureComponent {
             const deleted = new Map(state.deleted);
             deleted.set(item.id, true);
             return {deleted};
-          })
+          });
         }
       }
     ]);

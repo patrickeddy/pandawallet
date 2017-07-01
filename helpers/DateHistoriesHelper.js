@@ -45,7 +45,11 @@ class DateHistory{
   }
 
   getTransaction(id){
-    return this.transactions[id];
+    let trans = null;
+    this.transactions.map((t)=>{
+      if (t.id == id) trans = t;
+    });
+    return trans;
   }
 
   // Returns the transactions
@@ -62,7 +66,7 @@ class DateHistory{
     console.log("Creating transaction...");
     let id = 0;
     if (this.transactions){
-      id = this.transactions.length;
+      id = this.transactions[this.transactions.length-1].id +1; // set the id to one more than the previously created id.
     } else {
       this.transactions = [];
     }
@@ -73,7 +77,12 @@ class DateHistory{
 
   // Removes the transaction from this day
   removeTransactionFromDate(/* Int */ id) {
-    this.transactions.splice(id, 1);
+    for (let i = 0; i < this.transactions.length; i++){
+      const t = this.transactions[i];
+      if (t.id == id) {
+        this.transactions.splice(i, 1);
+      }
+    }
   }
 }
 
@@ -85,6 +94,7 @@ export default class DateHistoriesHelper{
   }
 
   constructor() {
+    this.histories = {};
     // Load or create
     global.storage.load({
       key: 'datehistories'
