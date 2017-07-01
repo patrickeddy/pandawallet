@@ -1,16 +1,39 @@
-export default static class BalanceHelper{
-  get(){
-    
+export default class BalanceHelper{
+  // Gets the balance from local store or creates it.
+  static get(){
+    return new Promise((res, rej)=>{
+      global.storage.load({
+        key: 'balance'
+      }).then(ret=>res(ret)) // return the balance if found
+      .catch(err=>{
+        rej(err);
+        if (err.name == "NotFoundError") {
+          // CREATE THE BALANCE OBJECT
+          global.storage.save({
+            key: 'balance',
+            data: Number(0)
+          }).then(ret=>console.log("Created balance entry in storage."))
+          .catch(err=>console.log(err.message));
+        }
+      });
+    });
   }
 
-  add(amount){
-
-  }
-
-  subtract(amount){
-
-  }
-  update(){
+  // Adds the amountVector (+ or -) to the balance.
+  static add(amountVector){
+    return new Promise((res, rej)=>{
+      global.storage.load({
+        key: 'balance'
+      }).then(ret=>{
+        const balance = ret + amountVector; // add the amount vector to the retrieved balance
+        global.storage.save({ // save the balance
+          key: 'balance',
+          data: Number(balance),
+          expires: null
+        }).then(ret=>res(ret)) // return the new balance
+        .catch(err=> rej(err));
+      }).catch(err=> rej(err));
+    });
 
   }
 }

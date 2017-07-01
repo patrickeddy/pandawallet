@@ -8,6 +8,7 @@ import {
 import Button from 'react-native-button'
 import MoneyText from '../components/MoneyText';
 import PriceCalendar from '../components/PriceCalendar';
+import BalanceHelper from '../helpers/BalanceHelper.js';
 
 export default class HomeScreen extends React.Component {
 
@@ -29,26 +30,13 @@ export default class HomeScreen extends React.Component {
     this._retrieveBalance();
   }
 
-  _updateBalance(newBalance) {
-    this.state.balance = newBalance;
-  }
-
   _retrieveBalance(){
-    global.storage.load({
-      key: 'balance'
-    }).then(ret=>{
+    BalanceHelper.get()
+    .then(balance=>{
       // Set the state balance
-      this.setState({balance: ret});
+      this.setState({balance: balance});
     }).catch(err=>{
       console.warn(err.message);
-      if (err.name == "NotFoundError") {
-        // CREATE THE BALANCE OBJECT
-        global.storage.save({
-          key: 'balance',
-          data: Number(0)
-        }).then(ret=>console.log("Created balance entry in storage."))
-        .catch(err=>console.log(err.message))
-      }
     });
   }
 

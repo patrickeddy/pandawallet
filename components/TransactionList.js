@@ -45,7 +45,7 @@ export default class TransactionList extends React.PureComponent {
       {
         text: 'Delete',
         onPress: ()=> {
-          // global.dhHelper.removeTransaction(dateString, id)
+          global.dhHelper.removeTransaction(dateString, id)
         }
       }
     ]);

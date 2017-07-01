@@ -7,6 +7,7 @@ import {
   DeviceEventEmitter
 } from 'react-native';
 import Button from 'react-native-button';
+import BalanceHelper from '../helpers/BalanceHelper.js';
 
 const Mode = ['-', '+'];
 
@@ -23,37 +24,21 @@ export default class TransactionScreen extends React.Component {
     console.log(`State amount ${this.state.amount} and note is: ${this.state.note}`);
 
     // First get the balance from local store.
-    global.storage.load({
-      key: 'balance'
-    }).then(ret=>{
-      this._updateBalance(ret);
-    }).catch(err=>{
-      console.warn(err.message);
-      // Return 0 for the retrieved balance
-      this._updateBalance(0);
-    });
+    this._updateBalance();
   }
 
-  _updateBalance(newBalance){
-    let balance = newBalance;
+  _updateBalance(){
     const { goBack } = this.props.navigation;
-
-    // Do the calculation for account balance.
+    // Calculation the amount
     const amountVector = this.state.mode == 0 ? (0 - this.state.amount) : this.state.amount;
-    balance = balance + amountVector;
-    console.log("Balance is " + balance);
-
-    // Save the balance
-    global.storage.save({
-      key: 'balance',
-      data: Number(balance),
-      expires: null
-    }).then(ret=>{
+    // Add the amount to the balance
+    BalanceHelper.add(amountVector)
+    .then(ret=>{
       // Add the transaction to this date
       this._addTransactionToDate(amountVector);
       DeviceEventEmitter.emit('updateBalance', {});
       goBack();
-    }).catch(err=> {
+    }).catch(err=>{
       console.warn(err.name);
       console.warn(err.message);
     });
@@ -64,7 +49,7 @@ export default class TransactionScreen extends React.Component {
     let date = new Date(); // default is today
     const passedInDate = this.props.navigation.state.params.date;
     if (typeof passedInDate != 'undefined'){
-      date = passedInDate;
+      date = global.dhHelper.getStandardizedDateString(passedInDate.dateString);
     }
     console.log("Executing...");
     console.log("Date before add transaction is: " + date.toDateString());
@@ -100,23 +85,30 @@ export default class TransactionScreen extends React.Component {
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
-        <TextInput
-          style={styles.amount}
-          placeholder="0"
-          autoFocus={true}
-          keyboardType='numeric'
-          editable={true}
-          returnKeyType='done'
-          onChangeText={(text)=> this.setState({amount: Number(text)})}
-        />
-        <TextInput
-          style={styles.note}
-          placeholder="Write a note."
-          editable={true}
-          multiline={true}
-          autoCapitalize='sentences'
-          onChangeText={(text)=> this.setState({note: text})}
-        />
+        <View style={styles.amountContainer}>
+          <TextInput
+            style={styles.amount}
+            placeholder="0"
+            autoFocus={true}
+            keyboardType='numeric'
+            editable={true}
+            returnKeyType='done'
+            onChangeText={(text)=> this.setState({amount: Number(text)})}
+            underlineColorAndroid='rgba(0,0,0,0)'
+          />
+        </View>
+        <View style={styles.noteContainer}>
+          <TextInput
+            style={styles.note}
+            placeholder="Eggs, gas, paycheck, etc."
+            editable={true}
+            multiline={true}
+            autoCapitalize='sentences'
+            onChangeText={(text)=> this.setState({note: text})}
+            underlineColorAndroid='rgba(0,0,0,0)'
+            clearButtonMode='while-editing'
+          />
+        </View>
       </View>
     );
   }
@@ -127,25 +119,33 @@ const styles = StyleSheet.create({
     flex:1,
     flexDirection: "column",
     justifyContent: "flex-start",
-    alignItems: "flex-start",
+    alignItems: "center",
     backgroundColor: 'black',
-    marginTop: 10,
+    padding: 15
+  },
+  amountContainer: {
+    flex: 2,
   },
   amount: {
-    height: 15,
-    fontSize: 35,
-    flexDirection: "row",
-    justifyContent: "center",
+    textAlign: "center",
+    fontSize: 40,
     color: "white",
-    alignItems: "center"
+    width: 350
+  },
+  noteContainer: {
+    flex: 8,
+    justifyContent: "flex-start",
+    alignItems: "stretch"
   },
   note: {
-    height: 50,
-    fontSize: 15,
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "stretch",
-    color: "white"
+    textAlign: "center",
+    fontSize: 20,
+    color: "white",
+    width: 350,
+    height: 200,
+    textAlignVertical: 'top',
+    borderTopWidth: 1,
+    borderColor: "dimgray"
   },
   doneButton: {
 

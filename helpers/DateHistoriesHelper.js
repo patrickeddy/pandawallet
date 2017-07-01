@@ -28,6 +28,7 @@
   `````````````
 */
 
+import BalanceHelper from './BalanceHelper';
 
 class Transaction{
   constructor(id, amount, note){
@@ -41,6 +42,10 @@ class DateHistory{
   constructor(/* String */ date, /* Array[Transaction] */ transactions){
     this.date = date;
     this.transactions = transactions;
+  }
+
+  getTransaction(id){
+    return this.transactions[id];
   }
 
   // Returns the transactions
@@ -156,6 +161,10 @@ export default class DateHistoriesHelper{
   removeTransaction(/* String */date, /* Int */ id){
     const day = this._getDHWithTransactionsForDate(date);
     day.removeTransactionFromDate(id);
+    this.histories[date] = day; // save the new date history transactions
+
+    const transaction = day.getTransaction(id); // remove the transaction amount from balance
+    BalanceHelper.add(0 - transaction.amount);
     this._save();
   }
 }
