@@ -33,19 +33,26 @@ class ListItem extends React.PureComponent {
 export default class TransactionList extends React.PureComponent {
 
   state = {
-    deleted: (new Map: Map<string, boolean>)
+    deleted: (new Map: Map<string, boolean>),
+    _isMounted: false
   };
 
   componentDidMount(){
-    DeviceEventEmitter.addListener("addedTransactionToDate", (e)=>{
-      this._refreshList();
-    });
+    this.setState({ _isMounted: true });
+    DeviceEventEmitter.addListener("addedTransactionToDate", this._refreshList);
+  }
+
+  componentWillUnmount(){
+    this.setState({ _isMounted: false });
+    DeviceEventEmitter.removeListener("addedTransactionToDate", this._refreshList);
   }
 
   _refreshList(){
-    this.setState({
-      deleted: (new Map: Map<string, boolean>)
-    });
+    if (this.state && this.state._isMounted){
+      this.setState({
+        deleted: (new Map: Map<string, boolean>)
+      });
+    }
   }
 
   // Gets the key from the transaction.
@@ -77,7 +84,7 @@ export default class TransactionList extends React.PureComponent {
   }
 
   _renderItem = ({item})=>{
-      if (!this.state.deleted.get(item.id) && !this.state.shouldUpdate) {
+      if (!this.state.deleted.get(item.id)) {
         return (
           <ListItem
             id={item.id}
