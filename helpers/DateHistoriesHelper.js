@@ -89,16 +89,34 @@ class DateHistory{
 export default class DateHistoriesHelper{
 
   // Helper method for those pesky param dates
+  //FIXME: GET RID OF THIS AND USE GET DATE STRING.
   static getStandardizedDateString(dateString){
     return new Date(dateString).toDateString();
+  }
+
+  // Formats dates YYYY-MM-DD.
+  static getDateString(/* Date */date){
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    return `${year}-${month >= 10 ? month : "0" + month}-${day >= 10 ? day : "0" + day}`;
+  }
+
+  // Promise that gets the histories from storage.
+  static getHistories(){
+    return new Promise((res, rej)=>{
+      global.storage.load({
+        key: 'datehistories'
+      }).then(ret=> res(ret))// Retrieve the datehistories from local store.
+      .catch(err=>rej(err));
+    });
   }
 
   constructor() {
     this.histories = {};
     // Load or create
-    global.storage.load({
-      key: 'datehistories'
-    }).then(ret=>{
+    DateHistoriesHelper.getHistories()
+    .then(ret=>{
       // Retrieve the datehistories from local store.
       this.histories = ret;
       console.log("DateHistories: " + JSON.stringify(ret));
@@ -116,6 +134,16 @@ export default class DateHistoriesHelper{
           console.log(err.message);
         });
       }
+    });
+  }
+
+  // Get the dates on the histories object.
+  getDatesWithHistory(){
+    return new Promise((res, rej)=>{
+      let keys = [];
+      DateHistoriesHelper.getHistories()
+      .then(ret=>res(Object.keys(ret))) // return the keys from the histories
+      .catch((err)=> rej(err));
     });
   }
 

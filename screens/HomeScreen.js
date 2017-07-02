@@ -10,14 +10,17 @@ import MoneyText from '../components/MoneyText';
 import PriceCalendar from '../components/PriceCalendar';
 import BalanceHelper from '../helpers/BalanceHelper.js';
 import TransactionButtons from '../components/TransactionButtons';
+import DateHistoriesHelper from '../helpers/DateHistoriesHelper';
 
 export default class HomeScreen extends React.Component {
 
   state = {
-      balance: 0
+      balance: 0,
+      markedDates: {}
   }
 
   componentWillMount() {
+    //FIXME: REMOVE BEFORE PUBLISHING
     //========= DEBUG ONLY ===========
     // global.storage.remove({ key: "balance" })
     // global.storage.remove({ key: "datehistories" });
@@ -26,9 +29,11 @@ export default class HomeScreen extends React.Component {
     DeviceEventEmitter.addListener('updateBalance', (e)=>{
       console.log("BALANCE UPDATE CAUGHT!");
       this._retrieveBalance();
+      this._getDatesWithHistory();
     });
     // Retrieve the balance from the local store
     this._retrieveBalance();
+    this._getDatesWithHistory();
   }
 
   _retrieveBalance(){
@@ -41,9 +46,23 @@ export default class HomeScreen extends React.Component {
     });
   }
 
-  shouldComponentUpdate(nextProps, nextState){
-    if (this.state.balance != nextState.balance) return true;
-    return false;
+  _getDatesWithHistory(){
+    global.dhHelper.getDatesWithHistory()
+    .then(dates=>{
+      this._formatmarkedDates(dates); // format the dates so that they're passed down to the calendar
+    });
+  }
+
+  _formatmarkedDates(dates) {
+    if (dates) {
+      const mdSettings = {};
+      dates.map((date)=>{
+        const dateString = DateHistoriesHelper.getDateString(new Date(date));
+        mdSettings[dateString] = {marked: true};
+      });
+      console.log("mdSettings: " + JSON.stringify(mdSettings));
+      this.setState({ markedDates: mdSettings });
+    }
   }
 
   static navigationOptions = ({navigation})=>{
@@ -55,10 +74,14 @@ export default class HomeScreen extends React.Component {
   };
 
   render() {
+    console.log("Dates in HS render: " + JSON.stringify(this.state.markedDates));
     return (
       <View style={styles.container}>
         <MoneyText style={styles.balance} amount={this.state.balance} />
-        <PriceCalendar navigation={this.props.navigation} style={styles.calendar}/>
+        <PriceCalendar
+          navigation={this.props.navigation}
+          style={styles.calendar}
+          markedDates={this.state.markedDates}/>
       </View>
     );
   }
