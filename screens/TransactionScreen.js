@@ -90,6 +90,10 @@ export default class TransactionScreen extends React.Component {
     };
   };
 
+  _scrubNumber(num){
+    return Number(num.replace(/[^\d.-]/g, ''));
+  }
+
   render() {
     const { navigate } = this.props.navigation;
     return (
@@ -102,7 +106,7 @@ export default class TransactionScreen extends React.Component {
             keyboardType='numeric'
             editable={true}
             returnKeyType='next'
-            onChangeText={(text)=> this.setState({amount: Number(text)})}
+            onChangeText={(text)=> this.setState({amount: this._scrubNumber(text)})}
             onSubmitEditing={(even)=> this.refs.note.focus()}
             underlineColorAndroid='rgba(0,0,0,0)'
           />

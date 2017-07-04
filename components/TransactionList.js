@@ -61,11 +61,11 @@ export default class TransactionList extends React.PureComponent {
     Alert.alert("💣...💥?", `${item.amount} - ${item.note}`,
     [
       {
-        text: 'Cancel',
+        text: '⃠',
         onPress: ()=> {}
       },
       {
-        text: 'Delete',
+        text: '✓',
         onPress: ()=> {
           // Delete the item from local store
           global.dhHelper.removeTransaction(dateString, item.id);
