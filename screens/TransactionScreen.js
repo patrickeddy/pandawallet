@@ -101,7 +101,7 @@ export default class TransactionScreen extends React.Component {
         <View style={styles.amountContainer}>
           <TextInput
             style={styles.amount}
-            placeholder="💵"
+            placeholder="#💵"
             autoFocus={true}
             keyboardType='numeric'
             editable={true}

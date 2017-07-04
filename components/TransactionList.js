@@ -65,7 +65,7 @@ export default class TransactionList extends React.PureComponent {
         onPress: ()=> {}
       },
       {
-        text: '✓',
+        text: '✔',
         onPress: ()=> {
           // Delete the item from local store
           global.dhHelper.removeTransaction(dateString, item.id);
