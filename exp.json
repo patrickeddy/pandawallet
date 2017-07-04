@@ -1,0 +1,13 @@
+{
+  name: "Panda Wallet",
+  icon: "https://s3.amazonaws.com/exp-us-standard/rnplay/app-icon.png",
+  version: "0.0.1",
+  slug: "pandawallet",
+  sdkVersion: "8.0.0",
+  ios: {
+    bundleIdentifier: "com.asterosoftware.pandawallet",
+  },
+  android: {
+    package: "com.asterosoftware.pandawallet",
+  }
+}
