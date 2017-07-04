@@ -14,6 +14,7 @@ export default class App extends React.Component {
 }
 
 global.APPNAME = "Panda Wallet";
+global.APPNAME_EMOJI = "🐼 👝"
 
 const storage = new Storage({
   size: 1000,

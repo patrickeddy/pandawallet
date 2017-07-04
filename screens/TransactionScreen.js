@@ -18,12 +18,12 @@ export default class TransactionScreen extends React.Component {
     mode: this.props.navigation.state.params.mode,
     amount: 0,
     note: "",
-    saving: true
+    saving: false
   };
 
   _doneButtonPress(){
     this.setState({
-      saving: false
+      saving: true
     });
     // Add or subtract the amount based on the current transaction node from the total balance.
     console.log(`State amount ${this.state.amount} and note is: ${this.state.note}`);
@@ -73,7 +73,7 @@ export default class TransactionScreen extends React.Component {
         style={styles.doneButton}
         containerStyle={styles.doneButtonContainer}
         onPress={()=> this._doneButtonPress()}
-      >Add</Button>
+      >👍</Button>
     );
 
     this.props.navigation.setParams({
@@ -97,7 +97,7 @@ export default class TransactionScreen extends React.Component {
         <View style={styles.amountContainer}>
           <TextInput
             style={styles.amount}
-            placeholder="0"
+            placeholder="💵"
             autoFocus={true}
             keyboardType='numeric'
             editable={true}
@@ -111,7 +111,7 @@ export default class TransactionScreen extends React.Component {
           <TextInput
             ref="note"
             style={styles.note}
-            placeholder="Write note."
+            placeholder="🛍➡📝"
             editable={true}
             autoCapitalize='sentences'
             returnKeyType='go'
@@ -162,11 +162,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "white",
     width: 350,
-    height: 200,
     textAlignVertical: 'top',
   },
   doneButton: {
-
+    fontSize: 20,
+    fontWeight: "bold",
   },
   doneButtonContainer: {
     padding: 15

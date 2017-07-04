@@ -20,11 +20,6 @@ export default class HomeScreen extends React.Component {
   }
 
   componentWillMount() {
-    //FIXME: REMOVE BEFORE PUBLISHING
-    //========= DEBUG ONLY ===========
-    // global.storage.remove({ key: "balance" })
-    // global.storage.remove({ key: "datehistories" });
-    //================================
     // // Add listener for balance update
     DeviceEventEmitter.addListener('updateBalance', (e)=>{
       console.log("BALANCE UPDATE CAUGHT!");
@@ -86,7 +81,7 @@ export default class HomeScreen extends React.Component {
     const buttons = <TransactionButtons
                       navigation={navigation}/>
     return {
-      title: global.APPNAME,
+      title: global.APPNAME_EMOJI,
       headerRight: buttons
     };
   };
