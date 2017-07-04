@@ -4,10 +4,11 @@ import {
   Text,
   StyleSheet,
   TextInput,
-  DeviceEventEmitter
+  ActivityIndicator
 } from 'react-native';
 import Button from 'react-native-button';
-import BalanceHelper from '../helpers/BalanceHelper.js';
+import BalanceHelper from '../helpers/BalanceHelper';
+import DateHistoriesHelper from '../helpers/DateHistoriesHelper';
 
 const Mode = ['-', '+'];
 
@@ -17,9 +18,13 @@ export default class TransactionScreen extends React.Component {
     mode: this.props.navigation.state.params.mode,
     amount: 0,
     note: "",
+    saving: true
   };
 
   _doneButtonPress(){
+    this.setState({
+      saving: false
+    });
     // Add or subtract the amount based on the current transaction node from the total balance.
     console.log(`State amount ${this.state.amount} and note is: ${this.state.note}`);
 
@@ -30,6 +35,7 @@ export default class TransactionScreen extends React.Component {
   _updateBalance(){
     const { goBack } = this.props.navigation;
     const { callback } = this.props.navigation.state.params;
+    console.log("State params on transaction add: " + JSON.stringify(this.props.navigation.state.params));
     // Calculation the amount
     const amountVector = this.state.mode == 0 ? (0 - this.state.amount) : this.state.amount;
     // Add the amount to the balance
@@ -37,8 +43,8 @@ export default class TransactionScreen extends React.Component {
     .then(ret=>{
       // Add the transaction to this date
       this._addTransactionToDate(amountVector);
+      if (callback) callback();
       goBack();
-      DeviceEventEmitter.emit("addedTransactionToDate", {});
     }).catch(err=>{
       console.warn(err.name);
       console.warn(err.message);
@@ -55,9 +61,9 @@ export default class TransactionScreen extends React.Component {
       date = new Date(passedInDate);
     }
     console.log("Executing...");
-    console.log("Date before add transaction is: " + date.toDateString());
+    console.log("Date before add transaction is: " + DateHistoriesHelper.getDateString(date));
     // Add this transaction to the current date
-    global.dhHelper.addTransaction(date.toDateString(), {amount: amountVector, note: this.state.note});
+    global.dhHelper.addTransaction(DateHistoriesHelper.getDateString(date), {amount: amountVector, note: this.state.note});
     console.log("Added transaction");
   }
 
@@ -67,7 +73,7 @@ export default class TransactionScreen extends React.Component {
         style={styles.doneButton}
         containerStyle={styles.doneButtonContainer}
         onPress={()=> this._doneButtonPress()}
-      >Done</Button>
+      >Add</Button>
     );
 
     this.props.navigation.setParams({
@@ -95,22 +101,31 @@ export default class TransactionScreen extends React.Component {
             autoFocus={true}
             keyboardType='numeric'
             editable={true}
-            returnKeyType='done'
+            returnKeyType='next'
             onChangeText={(text)=> this.setState({amount: Number(text)})}
+            onSubmitEditing={(even)=> this.refs.note.focus()}
             underlineColorAndroid='rgba(0,0,0,0)'
           />
         </View>
         <View style={styles.noteContainer}>
           <TextInput
+            ref="note"
             style={styles.note}
             placeholder="Write note."
             editable={true}
-            multiline={true}
             autoCapitalize='sentences'
+            returnKeyType='go'
             onChangeText={(text)=> this.setState({note: text})}
+            onSubmitEditing={()=> this._doneButtonPress()}
             underlineColorAndroid='rgba(0,0,0,0)'
             clearButtonMode='while-editing'
           />
+        </View>
+        <View style={styles.savingContainer}>
+          <ActivityIndicator
+            size='large'
+            animating={this.state.saving}
+            />
         </View>
       </View>
     );
@@ -155,5 +170,9 @@ const styles = StyleSheet.create({
   },
   doneButtonContainer: {
     padding: 15
+  },
+  savingContainer:{
+    marginTop: 25,
+    position: "absolute"
   }
 });

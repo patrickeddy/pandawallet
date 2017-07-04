@@ -61,6 +61,10 @@ class DateHistory{
     this.transactions = transactions;
   }
 
+  get numOfTransactions(){
+    return this.transactions? this.transactions.length : 0;
+  }
+
   // Adds the transaction to this day
   addTransactionToDate(/* Transaction */ transaction) {
     console.log("Creating transaction...");
@@ -87,12 +91,6 @@ class DateHistory{
 }
 
 export default class DateHistoriesHelper{
-
-  // Helper method for those pesky param dates
-  //FIXME: GET RID OF THIS AND USE GET DATE STRING.
-  static getStandardizedDateString(dateString){
-    return new Date(dateString).toDateString();
-  }
 
   // Formats dates YYYY-MM-DD.
   static getDateString(/* Date */date){
@@ -202,7 +200,11 @@ export default class DateHistoriesHelper{
     BalanceHelper.add(0 - transaction.amount);
 
     day.removeTransactionFromDate(id); // remove the transaction from the date
-    this.histories[date] = day; // save the new date history transactions
+    if (day.numOfTransactions == 0){
+      delete this.histories[date]; // delete the entry if there are no transactions on this date
+    } else {
+      this.histories[date] = day; // save the new date history transactions
+    }
     this._save();
   }
 }

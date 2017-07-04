@@ -25,13 +25,28 @@ export default class HomeScreen extends React.Component {
     // global.storage.remove({ key: "balance" })
     // global.storage.remove({ key: "datehistories" });
     //================================
-    // Add listener for balance update
+    // // Add listener for balance update
     DeviceEventEmitter.addListener('updateBalance', (e)=>{
       console.log("BALANCE UPDATE CAUGHT!");
-      this._retrieveBalance();
-      this._getDatesWithHistory();
+      this._getData();
     });
-    // Retrieve the balance from the local store
+    // Get the data
+    this._getData();
+  }
+
+  componentDidMount(){
+    // Set callback
+    this._setTransactionCallback();
+  }
+
+  _setTransactionCallback(){
+    console.log("Set nav params");
+    this.props.navigation.setParams({
+      transactionCallback: this._getData.bind(this)
+    });
+  }
+
+  _getData(){
     this._retrieveBalance();
     this._getDatesWithHistory();
   }
@@ -50,6 +65,8 @@ export default class HomeScreen extends React.Component {
     global.dhHelper.getDatesWithHistory()
     .then(dates=>{
       this._formatmarkedDates(dates); // format the dates so that they're passed down to the calendar
+    }).catch(err=>{
+      console.warn(err.message);
     });
   }
 
@@ -66,7 +83,8 @@ export default class HomeScreen extends React.Component {
   }
 
   static navigationOptions = ({navigation})=>{
-    const buttons = <TransactionButtons navigation={navigation}/>
+    const buttons = <TransactionButtons
+                      navigation={navigation}/>
     return {
       title: global.APPNAME,
       headerRight: buttons

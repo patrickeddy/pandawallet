@@ -20,9 +20,17 @@ export default class DayHistoryScreen extends React.Component {
   componentWillMount(){
     const day = this.props.navigation.state.params.day;
     if (day){
-      const dateString = DateHistoriesHelper.getStandardizedDateString(day.dateString);
+      const dateString = DateHistoriesHelper.getDateString(new Date(day.dateString));
       this._getTransactions(dateString);
     }
+
+    this.props.navigation.setParams({
+      callback: this._addTransactionCallback.bind(this)
+    });
+  }
+
+  _addTransactionCallback(){
+    this._getTransactions(this.state.date);
   }
 
   _getTransactions(dateString){
@@ -33,13 +41,24 @@ export default class DayHistoryScreen extends React.Component {
     });
   }
 
+  _deleteItem(item){
+    this._getTransactions(this.state.date);
+  }
+
+  _getDayTotal(){
+    let total = 0;
+    this.state.transactions.map((t)=> total += t.amount);
+    return total;
+  }
+
   static navigationOptions = ({navigation}) => {
     const day = navigation.state.params.day;
-    const dateString = DateHistoriesHelper.getStandardizedDateString(day.dateString);
+    const dateString = DateHistoriesHelper.getDateString(new Date(day.dateString));
 
     const buttons = <TransactionButtons
                       navigation={navigation}
                       date={dateString}
+                      callback={navigation.state.params.callback}
                     />
     return {
       title: dateString,
@@ -51,9 +70,15 @@ export default class DayHistoryScreen extends React.Component {
     console.log("Transactions: " + this.state.transactions);
     return (
       <View style={styles.container}>
-        <TransactionList
-            navigation={this.props.navigation}
-            transactions={this.state.transactions}/>
+        <View style={styles.totalContainer}>
+          <MoneyText style={styles.total} amount={this._getDayTotal()} />
+        </View>
+        <View style={styles.listContainer}>
+          <TransactionList
+              navigation={this.props.navigation}
+              transactions={this.state.transactions}
+              deleteItemCallback={this._deleteItem.bind(this)}/>
+        </View>
       </View>
     );
   }
@@ -62,8 +87,23 @@ export default class DayHistoryScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: "stretch",
+    justifyContent: "flex-start",
     backgroundColor: 'black',
   },
+  totalContainer:{
+    flex: 2,
+    justifyContent: "center",
+    alignItems: "center",
+    borderTopColor: "dimgray",
+    backgroundColor: "white"
+  },
+  total: {
+    color: "black",
+    fontSize: 30,
+    fontWeight: "bold"
+  },
+  listContainer: {
+    flex: 8,
+    alignItems: "stretch",
+  }
 });

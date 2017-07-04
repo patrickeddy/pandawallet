@@ -34,25 +34,20 @@ export default class TransactionList extends React.PureComponent {
 
   state = {
     deleted: (new Map: Map<string, boolean>),
-    _isMounted: false
   };
 
-  componentDidMount(){
-    this.setState({ _isMounted: true });
-    DeviceEventEmitter.addListener("addedTransactionToDate", this._refreshList);
-  }
-
-  componentWillUnmount(){
-    this.setState({ _isMounted: false });
-    DeviceEventEmitter.removeListener("addedTransactionToDate", this._refreshList);
+  componentWillReceiveProps(nextProps){
+    //TODO: Fix this so that it properly renders when there's a differenc, and not every time.
+    this._refreshList();
   }
 
   _refreshList(){
-    if (this.state && this.state._isMounted){
-      this.setState({
-        deleted: (new Map: Map<string, boolean>)
-      });
-    }
+    console.log("Refreshed state.deleted");
+    this.setState((state)=>{
+      const deleted = new Map(state.deleted);
+      deleted.clear();
+      return { deleted };
+    });
   }
 
   // Gets the key from the transaction.
@@ -61,7 +56,7 @@ export default class TransactionList extends React.PureComponent {
   _onPressItem = (item)=>{
     console.log("onPress - list");
     const day = this.props.navigation.state.params.day;
-    const dateString = DateHistoriesHelper.getStandardizedDateString(day.dateString);
+    const dateString = DateHistoriesHelper.getDateString(new Date(day.dateString));
     // Prompt for delete item.
     Alert.alert("Delete?", `${item.amount} - ${item.note}`,
     [
@@ -72,7 +67,10 @@ export default class TransactionList extends React.PureComponent {
       {
         text: 'Delete',
         onPress: ()=> {
+          // Delete the item from local store
           global.dhHelper.removeTransaction(dateString, item.id);
+          // Call the props callback onPressItem
+          this.props.deleteItemCallback(item);
           this.setState((state)=>{
             const deleted = new Map(state.deleted);
             deleted.set(item.id, true);
@@ -84,7 +82,7 @@ export default class TransactionList extends React.PureComponent {
   }
 
   _renderItem = ({item})=>{
-      if (!this.state.deleted.get(item.id)) {
+      if (!this.state.deleted.has(item.id)) {
         return (
           <ListItem
             id={item.id}
@@ -103,6 +101,7 @@ export default class TransactionList extends React.PureComponent {
         extraData={this.state}
         keyExtractor={this._keyExtractor}
         renderItem={this._renderItem}
+
       />
     );
   }
