@@ -52,8 +52,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   tButtonContainer: {
-    paddingTop: 15,
-    paddingBottom: 15,
+    paddingTop: 10,
+    paddingBottom: 10,
     paddingLeft: 25,
     paddingRight: 25,
     margin: 10,
@@ -62,6 +62,6 @@ const styles = StyleSheet.create({
   },
   tButton: {
       color: "white",
-      fontSize: 30
+      fontSize: 28
   },
 });
