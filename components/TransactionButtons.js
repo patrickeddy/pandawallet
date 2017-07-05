@@ -2,24 +2,14 @@ import React from 'react';
 import {
   View,
   Text,
-  StyleSheet
+  StyleSheet,
+  TouchableOpacity
 } from 'react-native';
-import Button from 'react-native-button';
 
 export default class TransactionButtons extends React.PureComponent{
 
-  state = {
-    disabled: false
-  };
-
   _handleButtonPress(params){
-    this.setState((state)=>{
-      disabled: true
-    });
     this.props.navigation.navigate('Transaction', params);
-    this.setState((state)=>{
-      disabled: false
-    });
   }
 
   render(){
@@ -39,18 +29,16 @@ export default class TransactionButtons extends React.PureComponent{
     console.log(JSON.stringify(b2Params));
     return (
       <View style={styles.transactionButtons}>
-        <Button
+        <TouchableOpacity
           onPress={() => this._handleButtonPress(b1Params)}
-          disabled={this.state.disabled}
-          containerStyle={styles.tButtonContainer}
-          style={styles.tButton}
-        >+</Button>
-        <Button
+          style={styles.tButtonContainer}>
+        <Text style={styles.tButton}>+</Text>
+      </TouchableOpacity>
+        <TouchableOpacity
           onPress={() => this._handleButtonPress(b2Params)}
-          disabled={this.state.disabled}
-          containerStyle={styles.tButtonContainer}
-          style={styles.tButton}
-        >-</Button>
+          style={styles.tButtonContainer}>
+          <Text style={styles.tButton}>-</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -70,11 +58,10 @@ const styles = StyleSheet.create({
     paddingRight: 25,
     margin: 10,
     backgroundColor: 'black',
-    borderRadius: 35
+    borderRadius: 35,
   },
   tButton: {
-    color: 'white',
-    borderRadius: 100,
-    fontSize: 20
-  }
+      color: "white",
+      fontSize: 30
+  },
 });

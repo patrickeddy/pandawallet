@@ -73,7 +73,7 @@ export default class TransactionScreen extends React.Component {
         style={styles.doneButton}
         containerStyle={styles.doneButtonContainer}
         onPress={()=> this._doneButtonPress()}
-      >👍</Button>
+      >Add</Button>
     );
 
     this.props.navigation.setParams({
@@ -101,24 +101,26 @@ export default class TransactionScreen extends React.Component {
         <View style={styles.amountContainer}>
           <TextInput
             style={styles.amount}
-            placeholder="#💵"
+            placeholder={"0"}
+            placeholderTextColor={"lightgray"}
             autoFocus={true}
-            keyboardType='numeric'
+            keyboardType={'numeric'}
             editable={true}
-            returnKeyType='next'
+            returnKeyType={'next'}
             onChangeText={(text)=> this.setState({amount: this._scrubNumber(text)})}
-            onSubmitEditing={(even)=> this.refs.note.focus()}
-            underlineColorAndroid='rgba(0,0,0,0)'
+            onEndEditing={(even)=> this.refs.note.focus()}
+            underlineColorAndroid={'rgba(0,0,0,0)'}
           />
         </View>
         <View style={styles.noteContainer}>
           <TextInput
             ref="note"
             style={styles.note}
-            placeholder="🛍➡📝"
+            placeholder={"Write a note."}
+            placeholderTextColor={"lightgray"}
             editable={true}
-            autoCapitalize='sentences'
-            returnKeyType='go'
+            autoCapitalize={'sentences'}
+            returnKeyType={'go'}
             onChangeText={(text)=> this.setState({note: text})}
             onSubmitEditing={()=> this._doneButtonPress()}
             underlineColorAndroid='rgba(0,0,0,0)'
@@ -146,26 +148,30 @@ const styles = StyleSheet.create({
     padding: 15
   },
   amountContainer: {
-    flex: 2,
+    backgroundColor: "rgba(150, 150, 150, 0.5)",
+    margin: 10,
   },
   amount: {
     textAlign: "center",
     fontSize: 40,
     color: "white",
-    width: 350,
+    width: 300,
+    height: 60,
     borderBottomWidth: 1,
     borderColor: "dimgray"
   },
   noteContainer: {
-    flex: 8,
     justifyContent: "flex-start",
-    alignItems: "stretch"
+    alignItems: "stretch",
+    backgroundColor: "rgba(150, 150, 150, 0.5)",
+    margin: 10,
   },
   note: {
     textAlign: "center",
     fontSize: 20,
     color: "white",
-    width: 350,
+    width: 300,
+    height: 50,
     textAlignVertical: 'top',
   },
   doneButton: {
@@ -178,5 +184,5 @@ const styles = StyleSheet.create({
   savingContainer:{
     marginTop: 25,
     position: "absolute"
-  }
+  },
 });

@@ -29,18 +29,6 @@ export default class HomeScreen extends React.Component {
     this._getData();
   }
 
-  componentDidMount(){
-    // Set callback
-    this._setTransactionCallback();
-  }
-
-  _setTransactionCallback(){
-    console.log("Set nav params");
-    this.props.navigation.setParams({
-      transactionCallback: this._getData.bind(this)
-    });
-  }
-
   _getData(){
     this._retrieveBalance();
     this._getDatesWithHistory();
@@ -78,11 +66,8 @@ export default class HomeScreen extends React.Component {
   }
 
   static navigationOptions = ({navigation})=>{
-    const buttons = <TransactionButtons
-                      navigation={navigation}/>
     return {
       title: global.APPNAME_EMOJI,
-      headerRight: buttons
     };
   };
 
@@ -95,6 +80,11 @@ export default class HomeScreen extends React.Component {
           navigation={this.props.navigation}
           style={styles.calendar}
           markedDates={this.state.markedDates}/>
+          <View style={styles.buttonsContainer}>
+            <TransactionButtons
+              navigation={this.props.navigation}
+            />
+          </View>
       </View>
     );
   }
@@ -118,9 +108,14 @@ const styles = StyleSheet.create({
     color: 'white'
   },
   calendar: {
-    flex: 8,
+    flex: 6,
     flexDirection: "column",
     justifyContent: "space-around",
     alignItems: "stretch"
   },
+  buttonsContainer:{
+    flex: 2,
+    justifyContent: "center",
+    alignItems: "center"
+  }
 });

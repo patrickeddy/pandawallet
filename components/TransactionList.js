@@ -58,14 +58,14 @@ export default class TransactionList extends React.PureComponent {
     const day = this.props.navigation.state.params.day;
     const dateString = DateHistoriesHelper.getDateString(new Date(day.dateString));
     // Prompt for delete item.
-    Alert.alert("💣...💥?", `${item.amount} - ${item.note}`,
+    Alert.alert("Delete?", `${item.amount} - ${item.note}`,
     [
       {
-        text: '⃠',
+        text: 'Cancel',
         onPress: ()=> {}
       },
       {
-        text: '✔',
+        text: 'Delete',
         onPress: ()=> {
           // Delete the item from local store
           global.dhHelper.removeTransaction(dateString, item.id);
