@@ -8,7 +8,7 @@ import {
   VictoryChart,
   VictoryBar
 }from 'victory-native';
-import BalanceHelper from '../helpers/BalanceHelper';
+import DateHistoriesHelper from '../helpers/DateHistoriesHelper';
 
 export default class AnalyzeScreen extends React.Component{
 
@@ -26,7 +26,7 @@ export default class AnalyzeScreen extends React.Component{
 
   componentWillMount(){
     this.setState({
-      spendingData: BalanceHelper.getSpendingData()
+      spendingData: DateHistoriesHelper.getSpendingData()
     });
   }
 
