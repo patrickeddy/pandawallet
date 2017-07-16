@@ -66,8 +66,15 @@ export default class HomeScreen extends React.Component {
   }
 
   static navigationOptions = ({navigation})=>{
+    const buttons = (
+      <Button
+        style={{marginRight: 10}}
+        onPress={()=>navigation.navigate('Analyze', {})}
+        >📊</Button>
+    );
     return {
       title: global.APPNAME_EMOJI,
+      headerRight: buttons
     };
   };
 

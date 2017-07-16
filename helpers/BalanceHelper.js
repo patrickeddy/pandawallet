@@ -42,4 +42,9 @@ export default class BalanceHelper{
       }).catch(err=> rej(err));
     });
   }
+
+  // Gets the spending data and returns an object
+  static getSpendingData(){
+    return {};
+  }
 }
