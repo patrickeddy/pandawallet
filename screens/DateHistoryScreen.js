@@ -71,7 +71,7 @@ export default class DayHistoryScreen extends React.Component {
         <View style={styles.buttonsContainer}>
           <TransactionButtons
             navigation={this.props.navigation}
-            date={this.date}
+            date={this.state.date}
             callback={this._addTransactionCallback.bind(this)}
           />
         </View>

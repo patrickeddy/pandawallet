@@ -110,6 +110,26 @@ export default class DateHistoriesHelper{
     });
   }
 
+  // Gets the spending data and returns an object
+  static getSpendingData(){
+    /*
+      Want:
+        1. Average spending per weekday
+        2. 10 largest purchases last month
+        3.
+
+      Strategy:
+        average spending (bar chart):
+            Get dates with histories, turning them into Date objects, calling getDay() to check the weekday, and then summing to the specific day value and the count of those days {amount: 100, count: 1}. Those amounts are then divided by their counts when turned into a final object like; {sun: 100, mon: 200, ..}
+        large purchases (pie chart):
+            Create an array of purchases by cycling through each transaction and adding to the array if it's larger (or rather, less than because -) than any items, sorting the array, and then deleting the last item if length > 10. Each item will take the form just like transactions: {day: "2017-5-3", note: "Pen", amount: 100}
+
+    */
+    return {
+
+    };
+  }
+
   constructor() {
     this.histories = {};
     // Load or create
@@ -206,25 +226,5 @@ export default class DateHistoriesHelper{
       this.histories[date] = day; // save the new date history transactions
     }
     this._save();
-  }
-
-  // Gets the spending data and returns an object
-  static getSpendingData(){
-    /*
-      Want:
-        1. Average spending per weekday
-        2. 10 largest purchases last month
-        3.
-
-      Strategy:
-        average spending (bar chart):
-            Get dates with histories, turning them into Date objects, calling getDay() to check the weekday, and then summing to the specific day value and the count of those days {amount: 100, count: 1}. Those amounts are then divided by their counts when turned into a final object like; {sun: 100, mon: 200, ..}
-        large purchases (pie chart):
-            Create an array of purchases by cycling through each transaction and adding to the array if it's larger (or rather, less than because -) than any items, sorting the array, and then deleting the last item if length > 10. Each item will take the form just like transactions: {day: "2017-5-3", note: "Pen", amount: 100}
-
-    */
-    return {
-
-    };
   }
 }
