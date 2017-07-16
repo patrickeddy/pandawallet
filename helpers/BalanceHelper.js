@@ -29,7 +29,8 @@ export default class BalanceHelper{
       global.storage.load({
         key: 'balance'
       }).then(ret=>{
-        const balance = ret + amountVector; // add the amount vector to the retrieved balance
+        let balance = ret + amountVector; // add the amount vector to the retrieved balance
+        balance = (balance * 100) / 100; // round to 2 decimals
         global.storage.save({ // save the balance
           key: 'balance',
           data: Number(balance),
