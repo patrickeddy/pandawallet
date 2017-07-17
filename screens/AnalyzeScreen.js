@@ -10,24 +10,37 @@ import {
 }from 'victory-native';
 import DateHistoriesHelper from '../helpers/DateHistoriesHelper';
 
+const WEEKDAY_NAMES = [
+  "Sun",
+  "Mon",
+  "Tues",
+  "Wed",
+  "Thurs",
+  "Fri",
+  "Sat"
+]
+
 export default class AnalyzeScreen extends React.Component{
 
   state = {
-    data:[
-      {x: "Sun", y: 200},
-      {x: "Mon", y: 200},
-      {x: "Tues", y: 5000},
-      {x: "Wed", y: 4000},
-      {x: "Thurs", y: 200},
-      {x: "Fri", y: 200},
-      {x: "Sat", y: 200}
-    ]
+    averageSpendingData: ()=> [],
   };
 
   componentWillMount(){
-    this.setState({
-      spendingData: DateHistoriesHelper.getSpendingData()
-    });
+    // Set the state for the charts
+    global.dhHelper.getSpendingData().then((spendingData)=>{
+      this.setState({
+        averageSpendingData: ()=>{
+          console.log("Called!");
+          const as = spendingData.averageSpending; // get the averageSpending data
+          const asChartData = []; // format the data for the bar chart
+          for (let i = 0; i < as.length; i++){
+            asChartData.push({x: WEEKDAY_NAMES[i], y: as[i]}); //
+          }
+          return asChartData;
+        },
+      });
+    }).catch((err)=> console.log(err));
   }
 
   static navigationOptions = {
@@ -39,7 +52,7 @@ export default class AnalyzeScreen extends React.Component{
       <View>
         <VictoryChart>
           <VictoryBar
-          data={this.state.data}
+          data={this.state.averageSpendingData()}
           colorScale="qualitative"
           />
         </VictoryChart>

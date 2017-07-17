@@ -110,26 +110,6 @@ export default class DateHistoriesHelper{
     });
   }
 
-  // Gets the spending data and returns an object
-  static getSpendingData(){
-    /*
-      Want:
-        1. Average spending per weekday
-        2. 10 largest purchases last month
-        3.
-
-      Strategy:
-        average spending (bar chart):
-            Get dates with histories, turning them into Date objects, calling getDay() to check the weekday, and then summing to the specific day value and the count of those days {amount: 100, count: 1}. Those amounts are then divided by their counts when turned into a final object like; {sun: 100, mon: 200, ..}
-        large purchases (pie chart):
-            Create an array of purchases by cycling through each transaction and adding to the array if it's larger (or rather, less than because -) than any items, sorting the array, and then deleting the last item if length > 10. Each item will take the form just like transactions: {day: "2017-5-3", note: "Pen", amount: 100}
-
-    */
-    return {
-
-    };
-  }
-
   constructor() {
     this.histories = {};
     // Load or create
@@ -226,5 +206,63 @@ export default class DateHistoriesHelper{
       this.histories[date] = day; // save the new date history transactions
     }
     this._save();
+  }
+
+  // Gets the spending data and returns an object
+  getSpendingData(){
+    const promise = new Promise((res, rej)=>{
+
+      const spendingData = {
+        averages: [], // 0-6
+        largePurchases: [] // 0-9
+      };
+
+      // Part 1 of the spendingData:
+      // - Get the weekday averages.
+      // Lets compile the average spending.
+      // We'll need to count the number of sundays or saturdays in that have transactions,
+      const dayCount = [0, 0, 0, 0, 0, 0, 0]; // 0-6 counts
+      // and also keep a running total for those transaction amounts
+      const transAmounts = [0, 0, 0, 0, 0, 0] // 0-6 totals
+      // And now we'll cycle through each history:
+      this.getDatesWithHistory().then((dates)=>{
+        dates.forEach((day)=>{
+          // Get the transactions for that day
+          this.getTransactions(day).forEach((item)=>{
+            // but make sure that the amount is +.
+            // (We're looking at spending, not income.)
+            if (item && item.amount && item.amount > 0){
+              // Determine the weekday by using a Date object
+              const dateObj = new Date(day);
+              const WEEKDAY = dateObj.getDay();
+              // and then add the transaction amount to the total for this day,
+              // incrementing the dayCount for this day as well.
+              transAmount[WEEKDAY] += item.amount;
+              dayCount[WEEKDAY]++;
+            }
+          }).catch((err)=>rej(err));
+        });
+
+        // Now we're assuming that we have all of the transAmounts and dayCounts we need to detemine our average spending.
+        // We'll simply create that by iterating and averaging
+        for (let i = 0; i < dayCount.length; i++){
+          const average = transAmounts[i] / dayCount[i];
+          spendingData.averages[i] = (average * 100) / 100; // round to 2 decimals
+        }
+        // The averages data is finished.
+
+        // Part 2 of the spendingData:
+        // - Get the largest purchases
+        /*
+        large purchases (pie chart):
+            Create an array of purchases by cycling through each transaction and adding to the array if it's larger (or rather, less than because -) than any items, sorting the array, and then popping the last item if length > 10. Each item will take the form just like transactions: {day: "2017-5-3", note: "Pen", amount: 100}
+        */
+
+
+        // Return the spending data object
+        res(spendingData);
+      }).catch((err)=>{rej(err)}); // averageSpending catch
+    });
+    return promise;
   }
 }
