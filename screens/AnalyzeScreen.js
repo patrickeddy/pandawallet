@@ -28,7 +28,7 @@ export default class AnalyzeScreen extends React.Component{
   state = {
     loading: true,
     averages: [{x: 0, y: 0}],
-    largePurchases: [{x: "Cheese", y: 5000}, {x: "Bacon", y: 100}],
+    largePurchases: [{date: "2017-7-17", note: "Cheese", amount: -5000}, {date: "2017-7-17", note: "Bacon", amount: -100}],
   };
 
   componentDidMount(){
@@ -54,10 +54,17 @@ export default class AnalyzeScreen extends React.Component{
     title: "Analyze",
   };
 
+  // Navigates to the date history screen for the large purchases
+  _goToDateHistoryScreen(date){
+    console.log("before go to datescreen: " + date);
+    const nav = this.props.navigation;
+    this.props.navigation.navigate('DateHistory', {day: {dateString: date}});
+  }
+
   render(){
     if (!this.state.loading) {
       return (
-        <ScrollView style={styles.container}>
+        <ScrollView contentContainerStyle={styles.container}>
           <Text style={styles.header}>Average Spending Per Weekday</Text>
           <VictoryChart>
             <VictoryBar
@@ -66,10 +73,16 @@ export default class AnalyzeScreen extends React.Component{
             />
           </VictoryChart>
           <Text style={styles.header}>Largest Purchases Last Month</Text>
-          <VictoryPie
-            data={this.state.largePurchases}
-            colorScale="qualitative"
-          />
+          <View style={styles.list}>
+            {this.state.largePurchases.map((item, key)=>{
+              return <Button
+                      key={key}
+                      style={styles.dateButton}
+                      onPress={()=>this._goToDateHistoryScreen(item.date)}>
+                      {item.note} ({item.amount})
+                      </Button>;
+            })}
+          </View>
         </ScrollView>
       );
     } else {
@@ -81,6 +94,7 @@ export default class AnalyzeScreen extends React.Component{
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
+    marginTop: 10,
   },
   header:{
     fontSize: 20,
@@ -89,6 +103,14 @@ const styles = StyleSheet.create({
   list: {
     justifyContent: "flex-start",
     alignItems: "flex-start",
-    padding: 10,
+  },
+  listItem: {
+    justifyContent: "flex-start",
+    fontSize: 20,
+    padding: 15,
+  },
+  dateButton: {
+    color: "blue",
+    fontSize: 20,
   },
 });

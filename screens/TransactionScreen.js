@@ -157,8 +157,6 @@ const styles = StyleSheet.create({
     color: "white",
     width: 300,
     height: 60,
-    borderBottomWidth: 1,
-    borderColor: "dimgray"
   },
   noteContainer: {
     justifyContent: "flex-start",
