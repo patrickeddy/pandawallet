@@ -63,6 +63,17 @@ export default class AnalyzeScreen extends React.Component{
 
   render(){
     if (!this.state.loading) {
+      // <Text style={styles.header}>Largest Purchases Last Month</Text>
+      // <View style={styles.list}>
+      //   {this.state.largePurchases.map((item, key)=>{
+      //     return <Button
+      //             key={key}
+      //             style={styles.dateButton}
+      //             onPress={()=>this._goToDateHistoryScreen(item.date)}>
+      //             {item.note} ({item.amount})
+      //             </Button>;
+      //   })}
+      // </View>
       return (
         <ScrollView contentContainerStyle={styles.container}>
           <Text style={styles.header}>Average Spending Per Weekday</Text>
@@ -72,17 +83,6 @@ export default class AnalyzeScreen extends React.Component{
             colorScale="qualitative"
             />
           </VictoryChart>
-          <Text style={styles.header}>Largest Purchases Last Month</Text>
-          <View style={styles.list}>
-            {this.state.largePurchases.map((item, key)=>{
-              return <Button
-                      key={key}
-                      style={styles.dateButton}
-                      onPress={()=>this._goToDateHistoryScreen(item.date)}>
-                      {item.note} ({item.amount})
-                      </Button>;
-            })}
-          </View>
         </ScrollView>
       );
     } else {
