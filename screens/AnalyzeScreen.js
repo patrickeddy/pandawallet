@@ -51,7 +51,7 @@ export default class AnalyzeScreen extends React.Component{
   }
 
   static navigationOptions = {
-    title: "Analyze",
+    title: "📊",
   };
 
   // Navigates to the date history screen for the large purchases
@@ -94,7 +94,7 @@ export default class AnalyzeScreen extends React.Component{
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    marginTop: 10,
+    padding: 20,
   },
   header:{
     fontSize: 20,
