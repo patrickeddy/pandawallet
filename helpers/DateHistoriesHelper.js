@@ -138,7 +138,6 @@ export default class DateHistoriesHelper{
   // Get the dates on the histories object.
   getDatesWithHistory(){
     return new Promise((res, rej)=>{
-      let keys = [];
       DateHistoriesHelper.getHistories()
       .then(ret=>res(Object.keys(ret))) // return the keys from the histories
       .catch((err)=> rej(err));
@@ -210,8 +209,8 @@ export default class DateHistoriesHelper{
 
   // Gets the spending data and returns an object
   getSpendingData(){
-    const promise = new Promise((res, rej)=>{
-
+    return new Promise((res, rej)=>{
+      console.log("getSpendingData()...");
       const spendingData = {
         averages: [], // 0-6
         largePurchases: [] // 0-9
@@ -223,33 +222,38 @@ export default class DateHistoriesHelper{
       // We'll need to count the number of sundays or saturdays in that have transactions,
       const dayCount = [0, 0, 0, 0, 0, 0, 0]; // 0-6 counts
       // and also keep a running total for those transaction amounts
-      const transAmounts = [0, 0, 0, 0, 0, 0] // 0-6 totals
+      const transAmounts = [0, 0, 0, 0, 0, 0, 0] // 0-6 totals
       // And now we'll cycle through each history:
+      console.log("getDatesWithHistory()...");
       this.getDatesWithHistory().then((dates)=>{
+        console.log("fetched the dates: " + dates);
         dates.forEach((day)=>{
+          // Determine the weekday by using a Date object
+          const dateObj = new Date(day);
+          const WEEKDAY = dateObj.getDay();
+          // Increment the day count for this day.
+          dayCount[WEEKDAY]++;
           // Get the transactions for that day
           this.getTransactions(day).forEach((item)=>{
             // but make sure that the amount is +.
             // (We're looking at spending, not income.)
-            if (item && item.amount && item.amount > 0){
-              // Determine the weekday by using a Date object
-              const dateObj = new Date(day);
-              const WEEKDAY = dateObj.getDay();
-              // and then add the transaction amount to the total for this day,
-              // incrementing the dayCount for this day as well.
-              transAmount[WEEKDAY] += item.amount;
-              dayCount[WEEKDAY]++;
+            if (item && item.amount && item.amount < 0){
+              console.log("Weekday: " + WEEKDAY);
+              // and then add the transaction amount to the total for this day.
+              transAmounts[WEEKDAY] += item.amount;
             }
-          }).catch((err)=>rej(err));
+          });
         });
+
+        console.log("dayCount: " + dayCount);
+        console.log("transAmounts: " + transAmounts);
 
         // Now we're assuming that we have all of the transAmounts and dayCounts we need to detemine our average spending.
         // We'll simply create that by iterating and averaging
         for (let i = 0; i < dayCount.length; i++){
-          const average = transAmounts[i] / dayCount[i];
+          const average = dayCount[i] != 0 ? (transAmounts[i] / dayCount[i]) : 0; // lets not divide by 0
           spendingData.averages[i] = (average * 100) / 100; // round to 2 decimals
         }
-        // The averages data is finished.
 
         // Part 2 of the spendingData:
         // - Get the largest purchases
@@ -258,11 +262,10 @@ export default class DateHistoriesHelper{
             Create an array of purchases by cycling through each transaction and adding to the array if it's larger (or rather, less than because -) than any items, sorting the array, and then popping the last item if length > 10. Each item will take the form just like transactions: {day: "2017-5-3", note: "Pen", amount: 100}
         */
 
-
+        console.log("Spending data: " + JSON.stringify(spendingData));
         // Return the spending data object
         res(spendingData);
-      }).catch((err)=>{rej(err)}); // averageSpending catch
+      }).catch((err)=>{rej(err)}); // averages catch
     });
-    return promise;
   }
 }

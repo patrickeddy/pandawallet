@@ -1,12 +1,15 @@
 import React from 'react';
 import {
+  ScrollView,
   View,
-  Text
+  Text,
+  StyleSheet
 } from 'react-native';
 import Button from 'react-native-button';
 import {
   VictoryChart,
-  VictoryBar
+  VictoryBar,
+  VictoryPie
 }from 'victory-native';
 import DateHistoriesHelper from '../helpers/DateHistoriesHelper';
 
@@ -23,40 +26,69 @@ const WEEKDAY_NAMES = [
 export default class AnalyzeScreen extends React.Component{
 
   state = {
-    averageSpendingData: ()=> [],
+    loading: true,
+    averages: [{x: 0, y: 0}],
+    largePurchases: [{x: "Cheese", y: 5000}, {x: "Bacon", y: 100}],
   };
 
-  componentWillMount(){
+  componentDidMount(){
     // Set the state for the charts
     global.dhHelper.getSpendingData().then((spendingData)=>{
+      const as = spendingData.averages; // get the averageSpending data
+      console.log(spendingData.averages);
+      const asChartData = []; // format the data for the bar chart
+      for (let i = 0; i < as.length; i++){
+        const bar = {x: WEEKDAY_NAMES[i], y: -(as[i])};
+        console.log(bar);
+        asChartData.push(bar); // set the x and y to the weekday names, and the average value
+      }
+
       this.setState({
-        averageSpendingData: ()=>{
-          console.log("Called!");
-          const as = spendingData.averageSpending; // get the averageSpending data
-          const asChartData = []; // format the data for the bar chart
-          for (let i = 0; i < as.length; i++){
-            asChartData.push({x: WEEKDAY_NAMES[i], y: as[i]}); //
-          }
-          return asChartData;
-        },
+        loading: false,
+        averages: asChartData,
       });
     }).catch((err)=> console.log(err));
   }
 
   static navigationOptions = {
-    title: "Analyze"
+    title: "Analyze",
   };
 
   render(){
-    return (
-      <View>
-        <VictoryChart>
-          <VictoryBar
-          data={this.state.averageSpendingData()}
-          colorScale="qualitative"
+    if (!this.state.loading) {
+      return (
+        <ScrollView style={styles.container}>
+          <Text style={styles.header}>Average Spending Per Weekday</Text>
+          <VictoryChart>
+            <VictoryBar
+            data={this.state.averages}
+            colorScale="qualitative"
+            />
+          </VictoryChart>
+          <Text style={styles.header}>Largest Purchases Last Month</Text>
+          <VictoryPie
+            data={this.state.largePurchases}
+            colorScale="qualitative"
           />
-        </VictoryChart>
-      </View>
-    );
+        </ScrollView>
+      );
+    } else {
+      return (<Text>Loading....</Text>);
+    }
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    alignItems: "center",
+  },
+  header:{
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  list: {
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    padding: 10,
+  },
+});
