@@ -68,7 +68,7 @@ export default class HomeScreen extends React.Component {
   static navigationOptions = ({navigation})=>{
     const buttons = (
       <Button
-        style={{marginRight: 10}}
+        style={{marginRight: 10, padding: 10}}
         onPress={()=>navigation.navigate('Analyze', {})}
         >📊</Button>
     );
