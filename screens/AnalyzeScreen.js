@@ -76,7 +76,7 @@ export default class AnalyzeScreen extends React.Component{
       // </View>
       return (
         <ScrollView contentContainerStyle={styles.container}>
-          <Text style={styles.header}>Average Spending Per Weekday</Text>
+          <Text style={styles.header}>Average Weekday Spending</Text>
           <VictoryChart>
             <VictoryBar
             data={this.state.averages}
