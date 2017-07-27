@@ -3,7 +3,8 @@ import {
   Text,
   View,
   StyleSheet,
-  DeviceEventEmitter
+  DeviceEventEmitter,
+  ActivityIndicator
 } from 'react-native';
 import Button from 'react-native-button'
 import MoneyText from '../components/MoneyText';
@@ -16,7 +17,8 @@ export default class HomeScreen extends React.Component {
 
   state = {
       balance: 0,
-      markedDates: {}
+      markedDates: {},
+      fetching: true
   }
 
   componentWillMount() {
@@ -61,7 +63,10 @@ export default class HomeScreen extends React.Component {
         mdSettings[dateString] = {marked: true};
       });
       console.log("mdSettings: " + JSON.stringify(mdSettings));
-      this.setState({ markedDates: mdSettings });
+      this.setState({
+        markedDates: mdSettings,
+        fetching: false,
+      });
     }
   }
 
@@ -91,6 +96,12 @@ export default class HomeScreen extends React.Component {
             <TransactionButtons
               navigation={this.props.navigation}
             />
+          </View>
+          <View style={styles.fetchingContainer}>
+            <ActivityIndicator
+              size='large'
+              animating={this.state.fetching}
+              />
           </View>
       </View>
     );
@@ -124,5 +135,14 @@ const styles = StyleSheet.create({
     flex: 2,
     justifyContent: "center",
     alignItems: "center"
-  }
+  },
+  fetchingContainer:{
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center"
+  },
 });
