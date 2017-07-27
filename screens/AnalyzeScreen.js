@@ -77,7 +77,8 @@ export default class AnalyzeScreen extends React.Component{
       return (
         <ScrollView contentContainerStyle={styles.container}>
           <Text style={styles.header}>Average Weekday Spending</Text>
-          <VictoryChart>
+          <VictoryChart
+            padding={75}>
             <VictoryBar
             data={this.state.averages}
             colorScale="qualitative"
@@ -94,7 +95,6 @@ export default class AnalyzeScreen extends React.Component{
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    padding: 20,
   },
   header:{
     fontSize: 20,

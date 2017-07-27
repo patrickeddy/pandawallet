@@ -85,7 +85,7 @@ export default class TransactionScreen extends React.Component {
     const { navigate } = navigation;
 
     return {
-      title: Mode[navigation.state.params.mode],
+      title: "Money",
       headerRight: navigation.state.params.doneButton
     };
   };
@@ -94,10 +94,34 @@ export default class TransactionScreen extends React.Component {
     return Number(num.replace(/[^\d.-]/g, ''));
   }
 
+  _setMode(mode){
+    this.setState({
+      mode: mode
+    });
+  }
+
   render() {
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
+        <View style={styles.toggleButtons}>
+          <Button
+            containerStyle={styles.modeButtonContainer}
+            style={styles.modeButton}
+            styleDisabled={styles.modeButtonDisabled}
+            onPress={()=>this._setMode(1)}
+            disabled={this.state.mode == 1}>
+            +
+          </Button>
+          <Button
+            containerStyle={styles.modeButtonContainer}
+            style={styles.modeButton}
+            styleDisabled={styles.modeButtonDisabled}
+            onPress={()=>this._setMode(0)}
+            disabled={this.state.mode == 0}>
+            -
+          </Button>
+        </View>
         <View style={styles.amountContainer}>
           <TextInput
             style={styles.amount}
@@ -136,6 +160,7 @@ export default class TransactionScreen extends React.Component {
       </View>
     );
   }
+
 }
 
 const styles = StyleSheet.create({
@@ -170,7 +195,6 @@ const styles = StyleSheet.create({
     color: "white",
     width: 300,
     height: 50,
-    textAlignVertical: 'top',
   },
   doneButton: {
     fontSize: 20,
@@ -182,5 +206,32 @@ const styles = StyleSheet.create({
   savingContainer:{
     marginTop: 25,
     position: "absolute"
+  },
+  toggleButtons: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "flex-start",
+  },
+  modeButtonContainer: {
+    backgroundColor: "rgba(150, 150, 150, 0.5)",
+    borderRadius: 35,
+    marginRight: 10,
+    marginLeft: 10,
+  },
+  modeButton: {
+    fontSize: 25,
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 22,
+    paddingRight: 22,
+    color: "black"
+  },
+  modeButtonDisabled: {
+    fontSize: 25,
+    paddingTop: 12,
+    paddingBottom: 12,
+    paddingLeft: 25,
+    paddingRight: 25,
+    color: "white"
   },
 });

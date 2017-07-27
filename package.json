@@ -2,7 +2,7 @@
   "name": "Panda Wallet",
   "version": "0.8.0",
   "description": "Keep track of your money.",
-  "author": null,
+  "author": "null",
   "private": true,
   "main": "node_modules/expo/AppEntry.js",
   "dependencies": {

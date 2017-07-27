@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     alignItems: "center",
     fontWeight: "bold",
-    fontSize: 50,
+    fontSize: 42,
     backgroundColor: 'black',
     color: 'white'
   },
