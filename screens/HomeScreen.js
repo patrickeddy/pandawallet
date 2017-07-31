@@ -19,7 +19,7 @@ export default class HomeScreen extends React.Component {
   state = {
       balance: 0,
       markedDates: {},
-      fetching: true
+      fetching: false
   }
 
   componentWillMount() {
@@ -48,10 +48,16 @@ export default class HomeScreen extends React.Component {
   }
 
   _getDatesWithHistory(){
+    this.setState({
+      fetching: true,
+    });
     global.dhHelper.getDatesWithHistory()
     .then(dates=>{
       this._formatmarkedDates(dates); // format the dates so that they're passed down to the calendar
     }).catch(err=>{
+      this.setState({
+        fetching: false,
+      });
       console.warn(err.message);
     });
   }
