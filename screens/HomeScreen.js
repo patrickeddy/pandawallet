@@ -12,6 +12,7 @@ import PriceCalendar from '../components/PriceCalendar';
 import BalanceHelper from '../helpers/BalanceHelper.js';
 import TransactionButtons from '../components/TransactionButtons';
 import DateHistoriesHelper from '../helpers/DateHistoriesHelper';
+import { SimpleLineIcons } from "@expo/vector-icons";
 
 export default class HomeScreen extends React.Component {
 
@@ -73,9 +74,12 @@ export default class HomeScreen extends React.Component {
   static navigationOptions = ({navigation})=>{
     const buttons = (
       <Button
-        style={{marginRight: 10, padding: 10}}
         onPress={()=>navigation.navigate('Analyze', {})}
-        >📊</Button>
+        ><SimpleLineIcons
+          name="chart"
+          size={15}
+          style={{marginRight: 10, padding: 10}}
+          ></SimpleLineIcons></Button>
     );
     return {
       title: global.APPNAME_EMOJI,
@@ -83,7 +87,23 @@ export default class HomeScreen extends React.Component {
     };
   };
 
+  _renderFetching(){
+    if (this.state.fetching){
+      return (
+        <View style={styles.fetchingContainer}>
+          <ActivityIndicator
+            size='large'
+            animating={this.state.fetching}
+            />
+        </View>
+      );
+    } else {
+      return null;
+    }
+  }
+
   render() {
+
     console.log("Dates in HS render: " + JSON.stringify(this.state.markedDates));
     return (
       <View style={styles.container}>
@@ -97,12 +117,7 @@ export default class HomeScreen extends React.Component {
               navigation={this.props.navigation}
             />
           </View>
-          <View style={styles.fetchingContainer}>
-            <ActivityIndicator
-              size='large'
-              animating={this.state.fetching}
-              />
-          </View>
+          {this._renderFetching()}
       </View>
     );
   }

@@ -51,7 +51,7 @@ export default class AnalyzeScreen extends React.Component{
   }
 
   static navigationOptions = {
-    title: "📊",
+    title: "Charts",
   };
 
   // Navigates to the date history screen for the large purchases
