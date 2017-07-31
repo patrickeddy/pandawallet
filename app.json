@@ -5,7 +5,7 @@
     "slug": "pandawallet",
     "privacy": "public",
     "sdkVersion": "18.0.0",
-    "version": "0.8.0",
+    "version": "0.9.0",
     "orientation": "portrait",
     "primaryColor": "#cccccc",
     "icon": "./assets/icons/app.png",

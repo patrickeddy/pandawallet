@@ -99,6 +99,7 @@ const styles = StyleSheet.create({
   header:{
     fontSize: 20,
     fontWeight: "bold",
+    marginTop: 15,
   },
   list: {
     justifyContent: "flex-start",
