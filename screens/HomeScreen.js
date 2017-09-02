@@ -65,8 +65,10 @@ export default class HomeScreen extends React.Component {
   _formatmarkedDates(dates) {
     if (dates) {
       const mdSettings = {};
+      console.log("datehistories: " + JSON.stringify(dates));
       dates.map((date)=>{
-        const dateString = DateHistoriesHelper.getDateString(new Date(date));
+        const dateString = DateHistoriesHelper.getDateString(DateHistoriesHelper.getDateObject(date));
+        console.log("datestring in map: " + dateString);
         mdSettings[dateString] = {marked: true};
       });
       console.log("mdSettings: " + JSON.stringify(mdSettings));

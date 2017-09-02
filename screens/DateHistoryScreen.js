@@ -20,7 +20,7 @@ export default class DayHistoryScreen extends React.Component {
   componentWillMount(){
     const day = this.props.navigation.state.params.day;
     if (day){
-      const dateString = DateHistoriesHelper.getDateString(new Date(day.dateString));
+      const dateString = day.dateString;
       this._getTransactions(dateString);
     }
   }
@@ -49,7 +49,7 @@ export default class DayHistoryScreen extends React.Component {
 
   static navigationOptions = ({navigation}) => {
     const day = navigation.state.params.day;
-    const dateString = DateHistoriesHelper.getDateString(new Date(day.dateString));
+    const dateString = day.dateString;
     return {
       title: dateString,
     };

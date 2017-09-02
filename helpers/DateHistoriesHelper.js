@@ -95,9 +95,17 @@ export default class DateHistoriesHelper{
   // Formats dates YYYY-MM-DD.
   static getDateString(/* Date */date){
     const year = date.getFullYear();
-    const month = date.getMonth() + 1;
+    const month = date.getMonth() + 1; // get the month, add 1
     const day = date.getDate();
     return `${year}-${month >= 10 ? month : "0" + month}-${day >= 10 ? day : "0" + day}`;
+  }
+
+  static getDateObject(dateString) {
+    const pieces = dateString.split("-");
+    const year = pieces[0];
+    const month = parseInt(pieces[1]) - 1; // get the month, subtract 1
+    const day = pieces[2];
+    return new Date(year, month, day);
   }
 
   // Promise that gets the histories from storage.
@@ -229,7 +237,7 @@ export default class DateHistoriesHelper{
         console.log("fetched the dates: " + dates);
         dates.forEach((day)=>{
           // Determine the weekday by using a Date object
-          const dateObj = new Date(day);
+          const dateObj = DateHistoriesHelper.getDateObject(day);
           const WEEKDAY = dateObj.getDay();
           // Increment the day count for this day.
           dayCount[WEEKDAY]++;

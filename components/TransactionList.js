@@ -56,7 +56,8 @@ export default class TransactionList extends React.PureComponent {
   _onPressItem = (item)=>{
     console.log("onPress - list");
     const day = this.props.navigation.state.params.day;
-    const dateString = DateHistoriesHelper.getDateString(new Date(day.dateString));
+    const dateObject = DateHistoriesHelper.getDateObject(day.dateString);
+    const dateString = DateHistoriesHelper.getDateString(dateObject);
     // Prompt for delete item.
     Alert.alert("Delete", `${item.amount} - ${item.note}`,
     [
