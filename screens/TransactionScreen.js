@@ -58,7 +58,7 @@ export default class TransactionScreen extends React.Component {
     console.log("passindate: " + passedInDate);
     if (passedInDate && typeof passedInDate != 'undefined'){
       console.log("Date passed : " + passedInDate);
-      date = new Date(passedInDate);
+      date = DateHistoriesHelper.getDateObject(passedInDate);
     }
     console.log("Executing...");
     console.log("Date before add transaction is: " + DateHistoriesHelper.getDateString(date));
